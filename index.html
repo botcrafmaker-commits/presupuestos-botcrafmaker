@@ -15,221 +15,279 @@
         .dark-input { background: #1e293b; border: 1px solid #334155; color: #f1f5f9; }
         .dark-input:focus { border-color: #3b82f6; ring: 2px solid #3b82f6; }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+        .animate-fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-200 min-h-screen">
+
     <div class="max-w-4xl mx-auto py-12 px-6">
-        <!-- Header con Logo SVG Profesional -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-12 dark-card p-8 rounded-2xl shadow-2xl">
+        
+        <!-- Header con Logo SVG Profesional y Configuración -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12 dark-card p-8 rounded-2xl shadow-2xl relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-4 opacity-30 group-hover:opacity-100 transition-opacity">
+                <button onclick="toggleSettings()" class="text-slate-400 hover:text-blue-400 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </button>
+            </div>
             <div class="flex items-center gap-6">
-                <!-- SVG Logo BOTCRAFmaker (Robot Estilo Moderno) -->
+                <!-- SVG Logo BOTCRAFmaker -->
                 <div class="w-16 h-16 bg-black rounded-2xl flex items-center justify-center border border-slate-700 overflow-hidden shadow-inner">
                     <svg viewBox="0 0 100 100" class="w-12 h-12">
                         <rect x="20" y="30" width="60" height="45" rx="10" fill="#cbd5e1"/>
                         <circle cx="40" cy="50" r="6" fill="#3b82f6"/>
                         <circle cx="60" cy="50" r="6" fill="#3b82f6"/>
-                        <rect x="42" y="65" width="16" height="4" rx="2" fill="#1e293b"/>
-                        <rect x="45" y="15" width="10" height="12" rx="2" fill="#3b82f6"/>
-                        <circle cx="50" cy="12" r="3" fill="#3b82f6"/>
+                        <path d="M40 65 Q50 72 60 65" stroke="#1e293b" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <rect x="35" y="20" width="30" height="10" rx="5" fill="#3b82f6"/>
+                        <path d="M45 15 L55 15" stroke="#3b82f6" stroke-width="4" stroke-linecap="round"/>
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-black tracking-tighter text-white">BOTCRAF<span class="text-blue-500">maker</span></h1>
-                    <p class="text-slate-400 font-medium">Pedro Juan Muñoz Esteve</p>
-                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">NIF: 334682 | Presupuestos Pro</p>
-                </div>
-            </div>
-            <div class="text-right mt-6 md:mt-0">
-                <div id="step-badge" class="inline-block px-4 py-1 bg-blue-500/10 text-blue-400 rounded-full text-[10px] font-black uppercase tracking-wider border border-blue-500/20 mb-2">
-                    PASO 1 DE 3
-                </div>
-                <h2 class="text-xl font-bold text-white">Wizard de Facturación</h2>
-            </div>
-        </div>
-
-        <!-- Progress Steps -->
-        <div class="flex justify-between mb-10 border-b border-slate-800">
-            <div id="step-tab-1" class="flex-1 text-center py-4 font-black text-[11px] tracking-widest step-active transition-all cursor-pointer uppercase" onclick="goToStep(1)">1. Cliente</div>
-            <div id="step-tab-2" class="flex-1 text-center py-4 font-black text-[11px] tracking-widest text-slate-600 transition-all cursor-pointer uppercase" onclick="goToStep(2)">2. Líneas</div>
-            <div id="step-tab-3" class="flex-1 text-center py-4 font-black text-[11px] tracking-widest text-slate-600 transition-all cursor-pointer uppercase" onclick="goToStep(3)">3. Confirmar</div>
-        </div>
-
-        <form id="budgetForm">
-            <!-- STEP 1: CLIENTE -->
-            <div id="step1" class="space-y-8">
-                <div class="dark-card p-8 rounded-2xl shadow-xl">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                            <span class="w-1.5 h-6 bg-blue-500 rounded-full"></span>
-                            Identificación del Cliente
-                        </h3>
-                        <div class="relative w-full md:w-80">
-                            <input type="text" id="clientSearch" placeholder="🔍 Buscar por DNI o Nombre..." 
-                                class="w-full dark-input px-5 py-2.5 rounded-full text-xs outline-none transition-all focus:ring-2 focus:ring-blue-500/50">
-                            <div id="searchResults" class="absolute hidden w-full mt-2 dark-card rounded-xl shadow-2xl border border-slate-700 overflow-hidden search-results"></div>
-                        </div>
+                    <h1 class="text-3xl font-black text-white tracking-tighter uppercase" id="my_company_display">BOTCRAF maker</h1>
+                    <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.4em]" id="my_name_display">Pedro Juan Muñoz Esteve</p>
+                    <div class="flex gap-3 mt-1">
+                        <span class="text-[9px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20 font-black uppercase tracking-widest" id="my_nif_display">NIF: 334682</span>
+                        <span class="text-[9px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700 font-black uppercase tracking-widest">Presupuestos Pro</span>
                     </div>
+                </div>
+            </div>
+            <div class="mt-6 md:mt-0 text-right">
+                <span class="text-slate-600 font-black text-[10px] tracking-[0.3em] uppercase block mb-1" id="step-badge">PASO 1 DE 3</span>
+                <div class="h-1.5 w-32 bg-slate-800 rounded-full overflow-hidden inline-block">
+                    <div id="progress-bar" class="h-full bg-blue-500 transition-all duration-500" style="width: 33.33%"></div>
+                </div>
+            </div>
+        </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2">
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Cliente / Empresa</label>
-                            <input type="text" id="client_name" required class="w-full dark-input px-4 py-3 rounded-xl outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">NIF / CIF</label>
-                            <input type="text" id="client_id" required class="w-full dark-input px-4 py-3 rounded-xl outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Teléfono</label>
-                            <input type="tel" id="client_phone" class="w-full dark-input px-4 py-3 rounded-xl outline-none" placeholder="+34 ...">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Dirección Completa</label>
-                            <input type="text" id="client_address" class="w-full dark-input px-4 py-3 rounded-xl outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Email</label>
-                            <input type="email" id="client_email" class="w-full dark-input px-4 py-3 rounded-xl outline-none">
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Fecha</label>
-                                <input type="date" id="budget_date" required class="w-full dark-input px-4 py-3 rounded-xl outline-none">
+        <!-- Wizard de Facturación -->
+        <div class="dark-card rounded-3xl shadow-2xl overflow-hidden mb-8">
+            <!-- Tabs del Wizard -->
+            <div class="flex border-b border-slate-800 bg-slate-900/50">
+                <button id="step-tab-1" class="flex-1 py-5 text-[10px] font-black uppercase tracking-[0.2em] step-active transition-all">1. Cliente</button>
+                <button id="step-tab-2" class="flex-1 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 transition-all">2. Líneas</button>
+                <button id="step-tab-3" class="flex-1 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 transition-all">3. Confirmar</button>
+            </div>
+
+            <form id="budgetForm" class="p-8 md:p-12">
+                
+                <!-- PASO 1: CLIENTE -->
+                <div id="step1" class="space-y-8 animate-fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <h3 class="text-white font-black text-xs uppercase tracking-[0.2em] flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                                Identificación del Cliente
+                            </h3>
+                            
+                            <div class="relative">
+                                <input type="text" id="clientSearch" placeholder="🔍 Buscar por DNI o Nombre..." class="w-full dark-input px-5 py-2.5 rounded-full text-xs outline-none transition-all focus:ring-2 focus:ring-blue-500/50">
+                                <div id="searchResults" class="absolute left-0 right-0 mt-2 dark-card rounded-xl shadow-2xl hidden search-results border-slate-700">
+                                    <!-- Dinámico -->
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Nº Presupuesto</label>
-                                <div class="flex gap-2">
-                                    <input type="text" id="budget_number" placeholder="AUTO" class="w-full dark-input px-4 py-3 rounded-xl outline-none bg-slate-900/40">
-                                    <button type="button" onclick="toggleAutoBudget()" id="autoBtn" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 px-3 rounded-xl hover:bg-blue-600/40 transition text-[10px] font-bold">
-                                        AUTO
-                                    </button>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-slate-500 text-[9px] font-black uppercase tracking-widest block mb-2">Cliente / Empresa</label>
+                                    <input type="text" id="client_name" required class="w-full dark-input px-4 py-3 rounded-xl outline-none transition-all focus:border-blue-500/50">
+                                </div>
+                                <div>
+                                    <label class="text-slate-500 text-[9px] font-black uppercase tracking-widest block mb-2">NIF / CIF</label>
+                                    <input type="text" id="client_id" required class="w-full dark-input px-4 py-3 rounded-xl outline-none transition-all focus:border-blue-500/50">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-slate-500 text-[9px] font-black uppercase tracking-widest block mb-2">Teléfono</label>
+                                        <input type="tel" id="client_phone" class="w-full dark-input px-4 py-3 rounded-xl outline-none placeholder-slate-700" placeholder="+34 ...">
+                                    </div>
+                                    <div>
+                                        <label class="text-slate-500 text-[9px] font-black uppercase tracking-widest block mb-2">Email</label>
+                                        <input type="email" id="client_email" class="w-full dark-input px-4 py-3 rounded-xl outline-none placeholder-slate-700">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-slate-500 text-[9px] font-black uppercase tracking-widest block mb-2">Dirección Completa</label>
+                                    <input type="text" id="client_address" class="w-full dark-input px-4 py-3 rounded-xl outline-none">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <h3 class="text-white font-black text-xs uppercase tracking-[0.2em] flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                                Detalles del Documento
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-slate-500 text-[9px] font-black uppercase tracking-widest block mb-2">Fecha del Presupuesto</label>
+                                    <input type="date" id="budget_date" required class="w-full dark-input px-4 py-3 rounded-xl outline-none">
+                                </div>
+                                <div>
+                                    <label class="text-slate-500 text-[9px] font-black uppercase tracking-widest block mb-2">Nº Presupuesto</label>
+                                    <div class="relative">
+                                        <input type="text" id="budget_number" placeholder="AUTO" class="w-full dark-input px-4 py-3 rounded-xl outline-none bg-slate-900/40">
+                                        <button type="button" onclick="toggleAutoBudget()" id="autoBtn" class="absolute right-3 top-3 text-blue-400 hover:text-blue-300 transition-colors">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                        </button>
+                                    </div>
+                                    <p class="text-[8px] text-slate-600 mt-2 italic">Pulsa el rayo para alternar entre auto-numeración o manual</p>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="pt-6 border-t border-slate-800 flex justify-end">
+                        <button type="button" onclick="goToStep(2)" class="bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-blue-900/20">SIGUIENTE</button>
+                    </div>
                 </div>
-                <div class="flex justify-end">
-                    <button type="button" onclick="goToStep(2)" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-blue-500 transition flex items-center gap-2">
-                        SIGUIENTE
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    </button>
-                </div>
-            </div>
 
-            <!-- STEP 2: LÍNEAS -->
-            <div id="step2" class="hidden space-y-8">
-                <div class="dark-card p-8 rounded-2xl shadow-xl">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-8">
-                        <span class="w-1.5 h-6 bg-blue-500 rounded-full"></span>
-                        Desglose de Conceptos
-                    </h3>
+                <!-- PASO 2: LÍNEAS -->
+                <div id="step2" class="space-y-8 hidden animate-fade-in">
                     <div class="overflow-x-auto">
-                        <table class="w-full" id="itemsTable">
+                        <table class="w-full border-collapse">
                             <thead>
-                                <tr class="text-slate-600 text-[9px] font-black uppercase tracking-[0.2em] border-b border-slate-800">
-                                    <th class="pb-4 text-left px-2">Descripción</th>
-                                    <th class="pb-4 text-center w-24">Cant.</th>
-                                    <th class="pb-4 text-right w-32">Precio Unit.</th>
-                                    <th class="pb-4 text-right w-32">Total</th>
-                                    <th class="pb-4 w-12"></th>
+                                <tr class="text-slate-500 text-[9px] font-black uppercase tracking-[0.2em] border-b border-slate-800">
+                                    <th class="py-4 px-2 text-left">Descripción del Concepto</th>
+                                    <th class="py-4 px-2 text-center w-24">Cant.</th>
+                                    <th class="py-4 px-2 text-right w-32">Precio Unit.</th>
+                                    <th class="py-4 px-2 text-right w-32">Total</th>
+                                    <th class="py-4 px-2 w-12"></th>
                                 </tr>
                             </thead>
-                            <tbody id="itemsBody" class="divide-y divide-slate-800">
-                                <tr class="item-row">
+                            <tbody id="itemsBody" class="divide-y divide-slate-800/50">
+                                <tr class="item-row group">
                                     <td class="py-5 px-2">
-                                        <input type="text" class="w-full bg-transparent border-none focus:ring-0 text-slate-200 text-sm placeholder-slate-800" placeholder="Descripción del servicio...">
+                                        <input type="text" class="w-full bg-transparent border-none focus:ring-0 text-slate-200 text-sm placeholder-slate-800" placeholder="Ej: Desarrollo Web Avanzado...">
                                     </td>
                                     <td class="py-5">
-                                        <input type="number" step="0.01" value="1" onchange="calculateRow(this)" class="w-full text-center bg-transparent border-none focus:ring-0 qty text-slate-200 text-sm">
+                                        <input type="number" step="0.01" value="1" onchange="calculateRow(this)" class="w-full text-center bg-transparent border-none focus:ring-0 qty text-slate-200 text-sm font-bold">
                                     </td>
                                     <td class="py-5">
-                                        <input type="number" step="0.01" value="0" onchange="calculateRow(this)" class="w-full text-right bg-transparent border-none focus:ring-0 price text-slate-200 text-sm">
+                                        <input type="number" step="0.01" value="0" onchange="calculateRow(this)" class="w-full text-right bg-transparent border-none focus:ring-0 price text-slate-200 text-sm font-bold">
                                     </td>
-                                    <td class="py-5 font-bold text-white text-right text-sm row-total">0.00 €</td>
+                                    <td class="py-5 font-black text-white text-right text-sm row-total">0.00 €</td>
                                     <td class="py-5 text-right">
-                                        <button type="button" onclick="removeRow(this)" class="text-slate-700 hover:text-red-500 transition">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                        </button>
+                                        <!-- No delete for first row -->
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <button type="button" onclick="addRow()" class="mt-6 flex items-center gap-2 text-blue-500 font-black text-[10px] uppercase tracking-widest hover:text-blue-400 transition">
-                        <span class="w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-lg">+</span>
-                        Añadir Concepto
-                    </button>
-
-                    <div class="mt-12 space-y-3 bg-slate-950/50 p-6 rounded-2xl border border-slate-900 shadow-inner">
-                        <div class="flex justify-between text-slate-500 text-[11px] font-bold uppercase tracking-widest">
-                            <span>Base Imponible:</span>
-                            <span id="subTotal">0.00 €</span>
-                        </div>
-                        <div class="flex justify-between text-slate-500 text-[11px] font-bold uppercase tracking-widest">
-                            <span>IVA (21%):</span>
-                            <span id="taxAmount">0.00 €</span>
-                        </div>
-                        <div class="flex justify-between text-2xl font-black text-white pt-3 border-t border-slate-800">
-                            <span class="tracking-tighter">TOTAL:</span>
-                            <span id="grandTotal" class="text-blue-500">0.00 €</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex justify-between items-center">
-                    <button type="button" onclick="goToStep(1)" class="text-slate-600 font-black text-[10px] uppercase tracking-[0.2em] hover:text-slate-400">ATRÁS</button>
-                    <button type="button" onclick="goToStep(3)" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-blue-500 transition flex items-center gap-2">
-                        CONFIRMAR
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- STEP 3: CONFIRMAR -->
-            <div id="step3" class="hidden space-y-8">
-                <div class="dark-card p-10 rounded-2xl shadow-xl text-center">
-                    <div class="w-16 h-16 bg-blue-600/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-blue-500/20">
-                        <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    </div>
-                    <h3 class="text-2xl font-black text-white mb-2 tracking-tight">Casi Listo</h3>
-                    <p class="text-slate-500 text-sm mb-10">Revisa el resumen y añade cualquier nota final.</p>
                     
-                    <div id="summaryContent" class="text-left bg-slate-900/50 p-8 rounded-2xl border border-slate-800 mb-8 divide-y divide-slate-800/50 shadow-inner">
-                        <!-- Summary -->
-                    </div>
-
-                    <div class="text-left mb-10">
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Notas / Condiciones del Presupuesto</label>
-                        <textarea id="budget_notes" rows="4" class="w-full dark-input px-5 py-4 rounded-2xl outline-none text-sm" placeholder="Validez del presupuesto, plazos de entrega, forma de pago..."></textarea>
-                    </div>
-
-                    <div id="statusContainer" class="hidden mb-8 p-5 rounded-2xl border">
-                        <p id="statusMsg" class="font-bold text-xs uppercase tracking-widest"></p>
-                    </div>
-
-                    <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg uppercase tracking-widest hover:bg-blue-500 transition shadow-2xl shadow-blue-900/40 flex items-center justify-center gap-3">
-                        GENERAR Y ENVIAR
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    <button type="button" onclick="addRow()" class="flex items-center gap-2 text-blue-400 hover:text-blue-300 font-black text-[9px] uppercase tracking-widest transition-all group">
+                        <span class="w-6 h-6 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-all">+</span>
+                        Añadir Nuevo Concepto
                     </button>
-                    <button type="button" onclick="goToStep(2)" class="mt-6 text-slate-600 font-black text-[10px] uppercase tracking-widest hover:text-slate-400">EDITAR CONCEPTOS</button>
+
+                    <div class="flex flex-col md:flex-row justify-between items-start gap-8 pt-8 border-t border-slate-800">
+                        <div class="w-full md:w-1/2">
+                            <label class="text-slate-500 text-[9px] font-black uppercase tracking-widest block mb-3 italic">Notas adicionales (opcional)</label>
+                            <textarea id="budget_notes" rows="3" class="w-full dark-input px-4 py-3 rounded-xl outline-none resize-none text-xs" placeholder="Validez del presupuesto, condiciones de pago..."></textarea>
+                        </div>
+                        <div class="w-full md:w-72 space-y-3">
+                            <div class="flex justify-between text-slate-500 text-[10px] font-bold uppercase tracking-widest">
+                                <span>Base Imponible</span>
+                                <span id="subTotal">0.00 €</span>
+                            </div>
+                            <div class="flex justify-between text-slate-500 text-[10px] font-bold uppercase tracking-widest">
+                                <span>IVA (21%)</span>
+                                <span id="taxAmount">0.00 €</span>
+                            </div>
+                            <div class="flex justify-between pt-4 border-t border-slate-800">
+                                <span class="text-blue-500 text-xs font-black uppercase tracking-[0.2em]">TOTAL</span>
+                                <span class="text-white text-2xl font-black tracking-tighter" id="grandTotal">0.00 €</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 flex justify-between gap-4">
+                        <button type="button" onclick="goToStep(1)" class="text-slate-500 hover:text-slate-300 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all">ATRÁS</button>
+                        <button type="button" onclick="goToStep(3)" class="bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-blue-900/20">CONFIRMAR</button>
+                    </div>
+                </div>
+
+                <!-- PASO 3: CONFIRMAR -->
+                <div id="step3" class="space-y-8 hidden animate-fade-in">
+                    <div class="p-8 rounded-3xl bg-slate-900/50 border border-blue-500/20 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                        <h3 class="text-blue-500 font-black text-xs uppercase tracking-[0.4em] mb-8">Resumen Final</h3>
+                        
+                        <div id="summaryContent" class="space-y-6">
+                            <!-- Dinámico -->
+                        </div>
+                    </div>
+
+                    <div id="statusContainer" class="hidden">
+                        <p id="statusMsg"></p>
+                    </div>
+
+                    <div class="pt-6 flex flex-col md:flex-row gap-4">
+                        <button type="button" onclick="goToStep(2)" class="flex-1 text-slate-500 hover:text-slate-300 px-6 py-5 rounded-2xl font-black text-xs uppercase tracking-widest transition-all">EDITAR CONCEPTOS</button>
+                        <button type="submit" id="submitBtn" class="flex-[2] bg-blue-600 hover:bg-blue-500 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-2xl shadow-blue-900/40 flex items-center justify-center gap-3 transition-all">
+                            GENERAR Y ENVIAR 🚀
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- Settings Modal (Freelancer Data) -->
+        <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-6">
+            <div class="dark-card max-w-md w-full rounded-3xl p-8 shadow-2xl border-blue-500/30">
+                <h3 class="text-white font-black text-xl mb-6 flex items-center gap-2">
+                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    Mis Datos (Freelancer)
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-slate-500 text-[9px] font-black uppercase tracking-widest block mb-2">Nombre Comercial</label>
+                        <input type="text" id="set_my_company" class="w-full dark-input px-4 py-3 rounded-xl outline-none">
+                    </div>
+                    <div>
+                        <label class="text-slate-500 text-[9px] font-black uppercase tracking-widest block mb-2">Nombre Completo</label>
+                        <input type="text" id="set_my_name" class="w-full dark-input px-4 py-3 rounded-xl outline-none">
+                    </div>
+                    <div>
+                        <label class="text-slate-500 text-[9px] font-black uppercase tracking-widest block mb-2">NIF / CIF</label>
+                        <input type="text" id="set_my_nif" class="w-full dark-input px-4 py-3 rounded-xl outline-none">
+                    </div>
+                    <div>
+                        <label class="text-slate-500 text-[9px] font-black uppercase tracking-widest block mb-2">Webhook n8n URL</label>
+                        <input type="url" id="set_my_webhook" placeholder="https://n8n.tu-instancia.com/..." class="w-full dark-input px-4 py-3 rounded-xl outline-none text-[10px]">
+                    </div>
+                </div>
+                <div class="mt-8 flex gap-4">
+                    <button onclick="toggleSettings()" class="flex-1 text-slate-500 hover:text-slate-300 font-black text-xs uppercase tracking-widest">CANCELAR</button>
+                    <button onclick="saveSettings()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-900/30">GUARDAR</button>
                 </div>
             </div>
-        </form>
+        </div>
 
-        <footer class="mt-16 text-center border-t border-slate-900 pt-8">
-            <p class="text-slate-800 text-[9px] font-black uppercase tracking-[0.4em]">BOTCRAFmaker DIGITAL ECOSYSTEM © 2024</p>
+        <footer class="text-center">
+            <p class="text-[9px] font-black text-slate-800 uppercase tracking-[0.5em]">BOTCRAFmaker DIGITAL ECOSYSTEM © 2024</p>
         </footer>
     </div>
 
     <script>
-        document.getElementById('budget_date').valueAsDate = new Date();
+        // Configuración y Estado
         let isAutoBudget = true;
-
+        let webhookUrl = localStorage.getItem('botcraf_webhook') || '';
+        
+        // Mock Data de Clientes
         const mockClients = [
             {name: "Juan Pérez", id: "12345678Z", address: "Calle Mayor 1, Madrid", phone: "600111222", email: "juan@ejemplo.com"},
             {name: "Empresa ABC S.L.", id: "B98765432", address: "Av. Diagonal 400, Barcelona", phone: "931223344", email: "info@abc.com"},
             {name: "Maria García", id: "87654321X", address: "Calle Serrano 10, Valencia", phone: "699888777", email: "maria@valencia.es"}
         ];
 
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('budget_date').valueAsDate = new Date();
+            loadSettings();
+        });
+
+        // Lógica de Búsqueda de Clientes
         const searchInput = document.getElementById('clientSearch');
         const searchResults = document.getElementById('searchResults');
 
@@ -239,11 +297,16 @@
                 searchResults.classList.add('hidden');
                 return;
             }
-            const matches = mockClients.filter(c => c.name.toLowerCase().includes(val) || c.id.toLowerCase().includes(val));
+            const matches = mockClients.filter(c => 
+                c.name.toLowerCase().includes(val) || 
+                c.id.toLowerCase().includes(val)
+            );
+            
             if(matches.length > 0) {
                 searchResults.innerHTML = matches.map(c => `
-                    <div class="p-4 hover:bg-slate-800 cursor-pointer border-b border-slate-800 last:border-0 transition-all" onclick='selectClient(${JSON.stringify(c)})'>
-                        <p class="font-bold text-white text-xs uppercase tracking-tight">${c.name}</p>
+                    <div class="p-4 hover:bg-slate-800 cursor-pointer border-b border-slate-800 last:border-0 transition-all group" 
+                         onclick='selectClient(${JSON.stringify(c)})'>
+                        <p class="font-bold text-white text-xs uppercase tracking-tight group-hover:text-blue-400">${c.name}</p>
                         <p class="text-[9px] text-slate-500 font-black mt-1 tracking-widest">${c.id}</p>
                     </div>
                 `).join('');
@@ -263,6 +326,7 @@
             searchInput.value = '';
         }
 
+        // Lógica de Numeración
         function toggleAutoBudget() {
             const input = document.getElementById('budget_number');
             const btn = document.getElementById('autoBtn');
@@ -280,6 +344,7 @@
             }
         }
 
+        // Navegación del Wizard
         function goToStep(step) {
             [1, 2, 3].forEach(s => {
                 document.getElementById('step' + s).classList.add('hidden');
@@ -289,29 +354,33 @@
             document.getElementById('step' + step).classList.remove('hidden');
             document.getElementById('step-tab-' + step).classList.add('step-active');
             document.getElementById('step-tab-' + step).classList.remove('text-slate-600');
+            
             document.getElementById('step-badge').innerText = `PASO ${step} DE 3`;
+            document.getElementById('progress-bar').style.width = (step * 33.33) + '%';
+            
             if(step === 3) generateSummary();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // Gestión de Líneas de Facturación
         function addRow() {
             const tbody = document.getElementById('itemsBody');
             const newRow = document.createElement('tr');
-            newRow.className = 'item-row';
+            newRow.className = 'item-row animate-fade-in group';
             newRow.innerHTML = `
                 <td class="py-5 px-2">
                     <input type="text" class="w-full bg-transparent border-none focus:ring-0 text-slate-200 text-sm placeholder-slate-800" placeholder="Nuevo concepto...">
                 </td>
                 <td class="py-5">
-                    <input type="number" step="0.01" value="1" onchange="calculateRow(this)" class="w-full text-center bg-transparent border-none focus:ring-0 qty text-slate-200 text-sm">
+                    <input type="number" step="0.01" value="1" onchange="calculateRow(this)" class="w-full text-center bg-transparent border-none focus:ring-0 qty text-slate-200 text-sm font-bold">
                 </td>
                 <td class="py-5">
-                    <input type="number" step="0.01" value="0" onchange="calculateRow(this)" class="w-full text-right bg-transparent border-none focus:ring-0 price text-slate-200 text-sm">
+                    <input type="number" step="0.01" value="0" onchange="calculateRow(this)" class="w-full text-right bg-transparent border-none focus:ring-0 price text-slate-200 text-sm font-bold">
                 </td>
-                <td class="py-5 font-bold text-white text-right text-sm row-total">0.00 €</td>
+                <td class="py-5 font-black text-white text-right text-sm row-total">0.00 €</td>
                 <td class="py-5 text-right">
-                    <button type="button" onclick="removeRow(this)" class="text-slate-700 hover:text-red-500 transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <button type="button" onclick="removeRow(this)" class="text-slate-700 hover:text-red-500 transition-colors p-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     </button>
                 </td>
             `;
@@ -345,59 +414,167 @@
             document.getElementById('grandTotal').innerText = (subtotal + tax).toFixed(2) + ' €';
         }
 
+        // Resumen y Generación
         function generateSummary() {
             const summary = document.getElementById('summaryContent');
             const client = document.getElementById('client_name').value;
             const total = document.getElementById('grandTotal').innerText;
             const email = document.getElementById('client_email').value || 'N/A';
             const num = document.getElementById('budget_number').value || 'AUTO-GEN';
-            
+            const itemsCount = document.querySelectorAll('.item-row').length;
+
             summary.innerHTML = `
-                <div class="py-6 flex justify-between items-start">
+                <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-[9px] font-black text-blue-500 uppercase tracking-[0.2em] mb-2">Cliente Destinatario</p>
-                        <p class="text-white font-black text-xl tracking-tight">${client}</p>
+                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2">Cliente</p>
+                        <p class="text-white font-black text-xl tracking-tight uppercase">${client}</p>
                         <p class="text-slate-500 text-xs mt-1 font-medium">${email}</p>
                     </div>
                     <div class="text-right">
-                        <p class="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] mb-2">Presupuesto Nº</p>
+                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2">Doc Nº</p>
                         <p class="text-white font-mono font-bold">${num}</p>
                     </div>
                 </div>
-                <div class="py-8 flex justify-between items-end">
+                <div class="grid grid-cols-2 gap-4 py-6 border-y border-slate-800/50">
                     <div>
-                        <p class="text-[9px] font-black text-blue-500 uppercase tracking-[0.2em] mb-3">Importe Final (IVA Incl.)</p>
+                        <p class="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] mb-1">Conceptos</p>
+                        <p class="text-white font-bold text-sm">${itemsCount} Líneas</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] mb-1">Fecha</p>
+                        <p class="text-white font-bold text-sm">${document.getElementById('budget_date').value}</p>
+                    </div>
+                </div>
+                <div class="flex justify-between items-end">
+                    <div>
+                        <p class="text-[9px] font-black text-blue-500 uppercase tracking-[0.3em] mb-3">Total a Pagar</p>
                         <p class="text-5xl font-black text-white tracking-tighter">${total}</p>
                     </div>
                     <div class="text-right">
-                        <p class="text-slate-600 text-[10px] font-bold uppercase tracking-widest italic">Listo para procesar</p>
+                        <p class="text-slate-600 text-[10px] font-bold uppercase tracking-widest italic">Listo para envío n8n</p>
                     </div>
                 </div>
             `;
         }
 
-        document.getElementById('budgetForm').addEventListener('submit', function(e) {
+        // Envío Real a n8n
+        document.getElementById('budgetForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            if(!webhookUrl) {
+                alert('⚠️ Configura el Webhook en los ajustes (icono engranaje) para poder enviar.');
+                toggleSettings();
+                return;
+            }
+
             const btn = document.getElementById('submitBtn');
             const status = document.getElementById('statusContainer');
             const msg = document.getElementById('statusMsg');
 
+            // Recopilar datos
+            const items = Array.from(document.querySelectorAll('.item-row')).map(row => ({
+                descripcion: row.querySelector('input[type="text"]').value,
+                cantidad: row.querySelector('.qty').value,
+                precio: row.querySelector('.price').value,
+                total: row.querySelector('.row-total').innerText
+            }));
+
+            const payload = {
+                metadata: {
+                    emisor: {
+                        empresa: document.getElementById('my_company_display').innerText,
+                        nombre: document.getElementById('my_name_display').innerText,
+                        nif: document.getElementById('my_nif_display').innerText.replace('NIF: ', '')
+                    },
+                    documento: {
+                        numero: document.getElementById('budget_number').value || 'AUTO',
+                        fecha: document.getElementById('budget_date').value,
+                        notas: document.getElementById('budget_notes').value
+                    }
+                },
+                cliente: {
+                    nombre: document.getElementById('client_name').value,
+                    id: document.getElementById('client_id').value,
+                    email: document.getElementById('client_email').value,
+                    telefono: document.getElementById('client_phone').value,
+                    direccion: document.getElementById('client_address').value
+                },
+                items: items,
+                totales: {
+                    base: document.getElementById('subTotal').innerText,
+                    iva: document.getElementById('taxAmount').innerText,
+                    total: document.getElementById('grandTotal').innerText
+                }
+            };
+
             btn.disabled = true;
-            btn.innerHTML = '<span class="animate-pulse tracking-[0.3em]">PROCESANDO...</span>';
+            btn.innerHTML = '<span class="animate-pulse tracking-[0.3em]">ENVIANDO...</span>';
             
             status.classList.remove('hidden');
             status.className = 'mb-8 p-5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-center';
-            msg.innerText = '📡 ENVIANDO DATOS A N8N & AIRTABLE...';
+            msg.innerText = '📡 CONECTANDO CON N8N & AIRTABLE...';
             msg.className = 'font-black text-[10px] tracking-[0.2em] text-blue-400';
 
-            setTimeout(() => {
-                btn.innerHTML = '¡COMPLETADO CON ÉXITO!';
-                btn.className = 'w-full bg-green-600 text-white py-5 rounded-2xl font-black text-lg shadow-2xl shadow-green-900/40 flex items-center justify-center gap-3';
-                status.className = 'mb-8 p-5 rounded-2xl bg-green-500/10 border border-green-500/20 text-center';
-                msg.innerText = '✅ PRESUPUESTO GUARDADO. EL PDF HA SIDO ENVIADO.';
-                msg.className = 'font-black text-[10px] tracking-[0.2em] text-green-400';
-  Implementación final: tema oscuro, logo profesional, teléfono, notas y búsqueda avanzada de clientes.          }, 3000);
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if(response.ok) {
+                    btn.innerHTML = '¡ENVIADO!';
+                    btn.className = 'w-full bg-green-600 text-white py-5 rounded-2xl font-black text-lg shadow-2xl shadow-green-900/40 flex items-center justify-center gap-3';
+                    status.className = 'mb-8 p-5 rounded-2xl bg-green-500/10 border border-green-500/20 text-center';
+                    msg.innerText = '✅ ÉXITO: DATOS SINCRONIZADOS Y PDF GENERADO.';
+                    msg.className = 'font-black text-[10px] tracking-[0.2em] text-green-400';
+                } else {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+            } catch (error) {
+                console.error(error);
+                btn.disabled = false;
+                btn.innerHTML = 'REINTENTAR ENVÍO';
+                status.className = 'mb-8 p-5 rounded-2xl bg-red-500/10 border border-red-500/20 text-center';
+                msg.innerText = '❌ ERROR: NO SE PUDO CONECTAR CON EL WEBHOOK.';
+                msg.className = 'font-black text-[10px] tracking-[0.2em] text-red-400';
+            }
         });
+
+        // Configuración de Perfil
+        function toggleSettings() {
+            document.getElementById('settingsModal').classList.toggle('hidden');
+        }
+
+        function loadSettings() {
+            const company = localStorage.getItem('botcraf_company') || 'BOTCRAF maker';
+            const name = localStorage.getItem('botcraf_name') || 'Pedro Juan Muñoz Esteve';
+            const nif = localStorage.getItem('botcraf_nif') || '334682';
+            
+            document.getElementById('my_company_display').innerText = company;
+            document.getElementById('my_name_display').innerText = name;
+            document.getElementById('my_nif_display').innerText = 'NIF: ' + nif;
+            
+            document.getElementById('set_my_company').value = company;
+            document.getElementById('set_my_name').value = name;
+            document.getElementById('set_my_nif').value = nif;
+            document.getElementById('set_my_webhook').value = webhookUrl;
+        }
+
+        function saveSettings() {
+            const company = document.getElementById('set_my_company').value;
+            const name = document.getElementById('set_my_name').value;
+            const nif = document.getElementById('set_my_nif').value;
+            webhookUrl = document.getElementById('set_my_webhook').value;
+
+            localStorage.setItem('botcraf_company', company);
+            localStorage.setItem('botcraf_name', name);
+            localStorage.setItem('botcraf_nif', nif);
+            localStorage.setItem('botcraf_webhook', webhookUrl);
+
+            loadSettings();
+            toggleSettings();
+        }
     </script>
 </body>
 </html>

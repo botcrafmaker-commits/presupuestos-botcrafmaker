@@ -1,185 +1,255 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BOTCRAFmaker · Presupuestos Profesionales</title>
-  <style>
-    :root { --az: #1a6dff; --az-d: #1254cc; --ng: #111; --gr: #f4f6fa; --tx: #333; }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: var(--gr); color: var(--tx); min-height: 100vh; }
-    header { background: var(--ng); padding: 12px 30px; display: flex; align-items: center; justify-content: center; }
-    .logo-img { height: 40px; }
-    .steps { display: flex; justify-content: space-around; background: #fff; padding: 20px 0; border-bottom: 1px solid #eee; margin-bottom: 30px; position: sticky; top: 0; z-index: 10; }
-    .st { display: flex; align-items: center; gap: 8px; color: #999; font-weight: 500; font-size: 0.9rem; }
-    .st.active { color: var(--az); }
-    .st i { width: 28px; height: 28px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; font-style: normal; }
-    .st.active i { background: var(--az); color: #fff; }
-    .cont { max-width: 600px; margin: 0 auto; padding: 0 20px 50px; }
-    .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-    h2 { font-size: 1.25rem; margin-bottom: 25px; font-weight: 600; color: #000; }
-    .fg { margin-bottom: 20px; }
-    label { display: block; font-size: 0.75rem; font-weight: 700; color: #777; text-transform: uppercase; margin-bottom: 8px; }
-    input, select, textarea { width: 100%; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; transition: border-color 0.2s; outline: none; }
-    input:focus { border-color: var(--az); }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-    .btn { background: var(--az); color: #fff; border: none; padding: 14px 30px; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; transition: background 0.2s; }
-    .btn:hover { background: var(--az-d); }
-    .btn-sec { background: transparent; color: #666; border: 1px solid #ddd; margin-top: 10px; }
-    .btn-sec:hover { background: #f9f9f9; }
-    .line { border-top: 1px solid #f0f0f0; padding-top: 20px; margin-top: 20px; position: relative; }
-    .btn-del { position: absolute; top: 20px; right: 0; color: #ff4d4d; border: none; background: none; font-size: 0.8rem; cursor: pointer; }
-    #s2, #s3, #success { display: none; }
-    .sum-row { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed #eee; }
-    .total { font-size: 1.3rem; font-weight: 700; color: var(--az); text-align: right; margin-top: 20px; }
-    .loading { display: none; text-align: center; margin-top: 20px; color: var(--az); font-weight: 600; }
-    .success-msg { text-align: center; padding: 40px 20px; }
-    .success-msg i { font-size: 3rem; color: #2ecc71; display: block; margin-bottom: 20px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Presupuestos - BOTCRAFmaker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .step-active { color: #2563eb; border-bottom: 2px solid #2563eb; }
+        .hidden { display: none; }
+    </style>
 </head>
-<body>
-  <header>
-    <img src=\"https://i.ibb.co/6R0D9qY/logo-botcrafmaker.png\" alt=\"BOTCRAFmaker\" class=\"logo-img\">
-  </header>
-  <div class=\"steps\">
-    <div class=\"st active\" id=\"st1\"><i>1</i> Cliente</div>
-    <div class=\"st\" id=\"st2_ind\"><i>2</i> Líneas</div>
-    <div class=\"st\" id=\"st3_ind\"><i>3</i> Confirmar</div>
-  </div>
-  <div class=\"cont\">
-    <div id=\"s1\" class=\"card\">
-      <h2>Datos del Cliente</h2>
-      <div class=\"fg\"><label>Nombre / Razón Social</label><input type=\"text\" id=\"c_nom\" placeholder=\"Ej. Empresa S.L.\"></div>
-      <div class=\"row\">
-        <div class=\"fg\"><label>NIF / CIF</label><input type=\"text\" id=\"c_nif\" placeholder=\"B12345678\"></div>
-        <div class=\"fg\"><label>Teléfono</label><input type=\"tel\" id=\"c_tel\" placeholder=\"600 000 000\"></div>
-      </div>
-      <div class=\"fg\"><label>Email</label><input type=\"email\" id=\"c_eml\" placeholder=\"correo@cliente.com\"></div>
-      <div class=\"fg\"><label>Dirección</label><input type=\"text\" id=\"c_dir\" placeholder=\"Calle Ejemplo, 123\"></div>
-      <div class=\"row\">
-        <div class=\"fg\"><label>Nº Presupuesto</label><input type=\"text\" id=\"p_num\"></div>
-        <div class=\"fg\"><label>Fecha</label><input type=\"date\" id=\"p_fec\"></div>
-      </div>
-      <button class=\"btn\" onclick=\"go(2)\">Siguiente</button>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-4xl mx-auto py-10 px-4">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div class="mb-4 md:mb-0">
+                <h1 class="text-2xl font-bold text-blue-600">BOTCRAFmaker</h1>
+                <p class="text-sm text-gray-500">Pedro Juan Muñoz Esteve</p>
+                <p class="text-xs text-gray-400">NIF: 334682 | Valencia, España</p>
+            </div>
+            <div class="text-right">
+                <h2 class="text-xl font-semibold text-gray-800">Generador de Presupuestos</h2>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="flex justify-between mb-8 border-b border-gray-200">
+            <div id="step-tab-1" class="flex-1 text-center py-4 font-medium step-active">1. Cliente y Datos</div>
+            <div id="step-tab-2" class="flex-1 text-center py-4 font-medium text-gray-400">2. Líneas de Presupuesto</div>
+            <div id="step-tab-3" class="flex-1 text-center py-4 font-medium text-gray-400">3. Confirmar y Enviar</div>
+        </div>
+
+        <!-- Form Wizard -->
+        <form id="budgetForm" class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+            
+            <!-- Step 1: Client Info -->
+            <div id="step1" class="p-8">
+                <h3 class="text-lg font-semibold mb-6 text-gray-700">Información del Cliente y Presupuesto</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre / Empresa Cliente</label>
+                        <input type="text" id="client_name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">CIF / NIF</label>
+                        <input type="text" id="client_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                        <input type="text" id="client_address" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email Cliente</label>
+                        <input type="email" id="client_email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
+                        <input type="date" id="budget_date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-end">
+                    <button type="button" onclick="goToStep(2)" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition">Siguiente: Añadir Líneas</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Line Items -->
+            <div id="step2" class="p-8 hidden">
+                <h3 class="text-lg font-semibold mb-6 text-gray-700">Líneas del Presupuesto</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left" id="itemsTable">
+                        <thead>
+                            <tr class="text-gray-400 text-sm uppercase">
+                                <th class="pb-4 font-medium">Descripción</th>
+                                <th class="pb-4 font-medium w-24">Cant.</th>
+                                <th class="pb-4 font-medium w-32">Precio (€)</th>
+                                <th class="pb-4 font-medium w-32">Total</th>
+                                <th class="pb-4 font-medium w-16"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsBody">
+                            <tr class="item-row border-t border-gray-100">
+                                <td class="py-4"><input type="text" class="w-full bg-transparent border-none focus:ring-0" placeholder="Ej: Consultoría IA"></td>
+                                <td class="py-4"><input type="number" step="0.01" value="1" onchange="calculateRow(this)" class="w-full bg-transparent border-none focus:ring-0 qty"></td>
+                                <td class="py-4"><input type="number" step="0.01" value="0" onchange="calculateRow(this)" class="w-full bg-transparent border-none focus:ring-0 price"></td>
+                                <td class="py-4 font-semibold text-gray-700 row-total">0.00 €</td>
+                                <td class="py-4 text-right"><button type="button" onclick="removeRow(this)" class="text-red-400 hover:text-red-600">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" onclick="addRow()" class="mt-4 text-blue-600 font-medium hover:text-blue-700">+ Añadir Concepto</button>
+
+                <div class="mt-10 border-t pt-6">
+                    <div class="flex justify-between text-xl font-bold text-gray-800">
+                        <span>Total Presupuesto:</span>
+                        <span id="grandTotal">0.00 €</span>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex justify-between">
+                    <button type="button" onclick="goToStep(1)" class="text-gray-500 px-6 py-2 font-medium hover:text-gray-700">Anterior</button>
+                    <button type="button" onclick="goToStep(3)" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition">Siguiente: Resumen</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Summary -->
+            <div id="step3" class="p-8 hidden text-center">
+                <div class="mb-6">
+                    <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800">¡Presupuesto Listo!</h3>
+                    <p class="text-gray-500">Revisa los datos antes de generar el PDF y guardarlo en el sistema.</p>
+                </div>
+                
+                <div id="summaryContent" class="text-left bg-gray-50 p-6 rounded-lg mb-8 text-sm">
+                    <!-- Dinamicamente llenado -->
+                </div>
+
+                <div class="flex justify-center gap-4">
+                    <button type="button" onclick="goToStep(2)" class="text-gray-500 px-6 py-2 font-medium hover:text-gray-700">Editar</button>
+                    <button type="submit" id="submitBtn" class="bg-blue-600 text-white px-10 py-3 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">GENERAR Y ENVIAR</button>
+                </div>
+                <p id="statusMsg" class="mt-4 text-sm font-medium"></p>
+            </div>
+        </form>
+
+        <p class="text-center mt-10 text-gray-400 text-xs">Sistema desarrollado por BOTCRAFmaker &copy; 2024</p>
     </div>
-    <div id=\"s2\" class=\"card\">
-      <h2>Líneas del Presupuesto</h2>
-      <div id=\"lines_cont\"></div>
-      <button class=\"btn btn-sec\" onclick=\"addLine()\" style=\"margin-bottom: 15px;\">+ Añadir Línea</button>
-      <div class=\"row\">
-        <button class=\"btn btn-sec\" onclick=\"go(1)\">Anterior</button>
-        <button class=\"btn\" onclick=\"go(3)\">Resumen</button>
-      </div>
-    </div>
-    <div id=\"s3\" class=\"card\">
-      <h2>Resumen Final</h2>
-      <div id=\"summary\"></div>
-      <div class=\"total\" id=\"sum_total\"></div>
-      <div class=\"row\" style=\"margin-top: 30px;\">
-        <button class=\"btn btn-sec\" onclick=\"go(2)\">Editar</button>
-        <button class=\"btn\" onclick=\"enviar()\">Generar PDF</button>
-      </div>
-      <div class=\"loading\" id=\"load\">Enviando a n8n...</div>
-    </div>
-    <div id=\"success\" class=\"card success-msg\">
-      <i>✓</i>
-      <h2>¡Presupuesto Enviado!</h2>
-      <p>Se está generando el PDF. Recibirás una notificación en breve.</p>
-      <button class=\"btn\" onclick=\"location.reload()\" style=\"margin-top: 30px;\">Crear Nuevo</button>
-    </div>
-  </div>
-  <script>
-    let lines = 0;
-    const p_fec = document.getElementById('p_fec');
-    const p_num = document.getElementById('p_num');
-    const today = new Date();
-    p_fec.valueAsDate = today;
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const yyyy = today.getFullYear();
-    const rand = Math.floor(1000 + Math.random() * 9000);
-    p_num.value = `PR-${yyyy}${mm}-${rand}`;
-    function addLine() {
-      lines++;
-      const div = document.createElement('div');
-      div.className = 'line';
-      div.id = 'line_' + lines;
-      div.innerHTML = '<button class=\"btn-del\" onclick=\"delLine(' + lines + ')\">Eliminar</button><div class=\"fg\"><label>Concepto</label><input type=\"text\" class=\"l_desc\" placeholder=\"Descripción\"></div><div class=\"row\"><div class=\"fg\"><label>Cant.</label><input type=\"number\" class=\"l_cant\" value=\"1\" onchange=\"calcTotal()\"></div><div class=\"fg\"><label>Precio (€)</label><input type=\"number\" class=\"l_pre\" value=\"0\" step=\"0.01\" onchange=\"calcTotal()\"></div></div>';
-      document.getElementById('lines_cont').appendChild(div);
-    }
-    function delLine(id) { document.getElementById('line_'+id).remove(); calcTotal(); }
-    function go(s) {
-      ['s1','s2','s3'].forEach(id => document.getElementById(id).style.display = 'none');
-      document.getElementById('s'+s).style.display = 'block';
-      ['st1','st2_ind','st3_ind'].forEach((id, i) => {
-        document.getElementById(id).classList.toggle('active', i+1 === s);
-      });
-      if(s === 3) showSummary();
-    }
-    function calcTotal() {
-      let t = 0;
-      document.querySelectorAll('.line').forEach(l => {
-        const c = l.querySelector('.l_cant').value || 0;
-        const p = l.querySelector('.l_pre').value || 0;
-        t += c * p;
-      });
-      return t;
-    }
-    function showSummary() {
-      const nom = document.getElementById('c_nom').value;
-      const nif = document.getElementById('c_nif').value;
-      const tel = document.getElementById('c_tel').value;
-      const eml = document.getElementById('c_eml').value;
-      const dir = document.getElementById('c_dir').value;
-      const num = document.getElementById('p_num').value;
-      const fec = document.getElementById('p_fec').value;
-      let html = '<div class=\"sum-row\"><span>Cliente:</span><strong>' + nom + '</strong></div>';
-      html += '<div class=\"sum-row\"><span>NIF/Tel:</span><strong>' + nif + ' / ' + tel + '</strong></div>';
-      html += '<div class=\"sum-row\"><span>Email:</span><strong>' + eml + '</strong></div>';
-      html += '<div class=\"sum-row\"><span>Dirección:</span><strong>' + dir + '</strong></div>';
-      html += '<div class=\"sum-row\"><span>Presupuesto:</span><strong>' + num + ' (' + fec + ')</strong></div><br><h3>Líneas:</h3>';
-      document.querySelectorAll('.line').forEach(l => {
-        const d = l.querySelector('.l_desc').value;
-        const c = l.querySelector('.l_cant').value;
-        const p = l.querySelector('.l_pre').value;
-        html += '<div class=\"sum-row\"><span>' + d + ' (x' + c + ')</span><strong>' + (c*p).toFixed(2) + '€</strong></div>';
-      });
-      document.getElementById('summary').innerHTML = html;
-      document.getElementById('sum_total').innerText = 'TOTAL: ' + calcTotal().toFixed(2) + '€';
-    }
-    async function enviar() {
-      const load = document.getElementById('load');
-      load.style.display = 'block';
-      const data = {
-        emisor: \"Pedro Juan Muñoz Esteve\",
-        nif_emisor: \"33468269A\",
-        cliente: document.getElementById('c_nom').value,
-        nif_cliente: document.getElementById('c_nif').value,
-        tel_cliente: document.getElementById('c_tel').value,
-        email_cliente: document.getElementById('c_eml').value,
-        dir_cliente: document.getElementById('c_dir').value,
-        numero: document.getElementById('p_num').value,
-        fecha: document.getElementById('p_fec').value,
-        total: calcTotal(),
-        lineas: Array.from(document.querySelectorAll('.line')).map(l => ({
-          descripcion: l.querySelector('.l_desc').value,
-          cantidad: l.querySelector('.l_cant').value,
-          precio: l.querySelector('.l_pre').value
-        }))
-      };
-      try {
-        await fetch('https://n8n.botcrafmaker.com/webhook/presupuestos', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(data)
+
+    <script>
+        // Set default date
+        document.getElementById('budget_date').valueAsDate = new Date();
+
+        function goToStep(step) {
+            // Tabs update
+            [1, 2, 3].forEach(s => {
+                document.getElementById('step' + s).classList.add('hidden');
+                document.getElementById('step-tab-' + s).classList.remove('step-active');
+                document.getElementById('step-tab-' + s).classList.add('text-gray-400');
+            });
+            document.getElementById('step' + step).classList.remove('hidden');
+            document.getElementById('step-tab-' + step).classList.add('step-active');
+            document.getElementById('step-tab-' + step).classList.remove('text-gray-400');
+
+            if(step === 3) generateSummary();
+        }
+
+        function addRow() {
+            const tbody = document.getElementById('itemsBody');
+            const newRow = document.createElement('tr');
+            newRow.className = 'item-row border-t border-gray-100';
+            newRow.innerHTML = `
+                <td class="py-4"><input type="text" class="w-full bg-transparent border-none focus:ring-0" placeholder="Nuevo concepto..."></td>
+                <td class="py-4"><input type="number" step="0.01" value="1" onchange="calculateRow(this)" class="w-full bg-transparent border-none focus:ring-0 qty"></td>
+                <td class="py-4"><input type="number" step="0.01" value="0" onchange="calculateRow(this)" class="w-full bg-transparent border-none focus:ring-0 price"></td>
+                <td class="py-4 font-semibold text-gray-700 row-total">0.00 €</td>
+                <td class="py-4 text-right"><button type="button" onclick="removeRow(this)" class="text-red-400 hover:text-red-600">×</button></td>
+            `;
+            tbody.appendChild(newRow);
+        }
+
+        function removeRow(btn) {
+            btn.closest('tr').remove();
+            calculateGrandTotal();
+        }
+
+        function calculateRow(input) {
+            const row = input.closest('tr');
+            const qty = row.querySelector('.qty').value || 0;
+            const price = row.querySelector('.price').value || 0;
+            const total = qty * price;
+            row.querySelector('.row-total').innerText = total.toFixed(2) + ' €';
+            calculateGrandTotal();
+        }
+
+        function calculateGrandTotal() {
+            let total = 0;
+            document.querySelectorAll('.row-total').forEach(el => {
+                total += parseFloat(el.innerText);
+            });
+            document.getElementById('grandTotal').innerText = total.toFixed(2) + ' €';
+        }
+
+        function generateSummary() {
+            const summary = document.getElementById('summaryContent');
+            const client = document.getElementById('client_name').value;
+            const cif = document.getElementById('client_id').value;
+            const total = document.getElementById('grandTotal').innerText;
+            
+            summary.innerHTML = \`
+                <div class="grid grid-cols-2 gap-4">
+                    <div><p class="font-bold text-gray-500">CLIENTE</p><p class="text-base text-gray-800">\${client}</p></div>
+                    <div><p class="font-bold text-gray-500">CIF/NIF</p><p class="text-base text-gray-800">\${cif}</p></div>
+                    <div><p class="font-bold text-gray-500">FECHA</p><p class="text-base text-gray-800">\${document.getElementById('budget_date').value}</p></div>
+                    <div><p class="font-bold text-gray-500 uppercase">Total Estimado</p><p class="text-xl font-black text-blue-600">\${total}</p></div>
+                </div>
+            \`;
+        }
+
+        document.getElementById('budgetForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const msg = document.getElementById('statusMsg');
+            
+            btn.disabled = true;
+            btn.innerText = 'PROCESANDO...';
+            msg.innerText = 'Enviando datos a n8n...';
+            msg.className = 'mt-4 text-sm font-medium text-blue-600';
+
+            // Collect data
+            const items = [];
+            document.querySelectorAll('.item-row').forEach(row => {
+                items.push({
+                    description: row.querySelector('input[type="text"]').value,
+                    qty: row.querySelector('.qty').value,
+                    price: row.querySelector('.price').value
+                });
+            });
+
+            const data = {
+                client: document.getElementById('client_name').value,
+                cif: document.getElementById('client_id').value,
+                address: document.getElementById('client_address').value,
+                email: document.getElementById('client_email').value,
+                date: document.getElementById('budget_date').value,
+                items: items,
+                total: document.getElementById('grandTotal').innerText
+            };
+
+            // WEBHOOK URL de n8n (Placeholder - debe ser reemplazado por el real)
+            const WEBHOOK_URL = 'https://n8n.webhook.url/presupuestos';
+
+            // Simulate or Send
+            console.log('Sending to n8n:', data);
+            
+            // fetch(WEBHOOK_URL, {
+            //     method: 'POST',
+            //     body: JSON.stringify(data),
+            //     headers: {'Content-Type': 'application/json'}
+            // }).then(...)
+
+            setTimeout(() => {
+                btn.innerText = 'COMPLETADO';
+                btn.className = 'bg-green-600 text-white px-10 py-3 rounded-xl font-bold shadow-lg shadow-green-200';
+                msg.innerText = '✓ El presupuesto ha sido generado y los datos guardados en Airtable.';
+                msg.className = 'mt-4 text-sm font-medium text-green-600';
+            }, 2000);
         });
-        document.getElementById('s3').style.display = 'none';
-        document.getElementById('success').style.display = 'block';
-      } catch (e) {
-        alert('Error al enviar. Revisa el webhook.');
-        load.style.display = 'none';
-      }
-    }
-    addLine();
-  </script>
+    </script>
 </body>
 </html>

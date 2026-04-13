@@ -8,9 +8,8 @@
     :root { --az: #1a6dff; --az-d: #1254cc; --ng: #111; --gr: #f4f6fa; --tx: #333; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background: var(--gr); color: var(--tx); min-height: 100vh; }
-    header { background: var(--ng); padding: 15px 30px; display: flex; align-items: center; }
-    .logo { color: #fff; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
-    .logo span { color: var(--az); }
+    header { background: var(--ng); padding: 12px 30px; display: flex; align-items: center; justify-content: center; }
+    .logo-img { height: 40px; }
     .steps { display: flex; justify-content: space-around; background: #fff; padding: 20px 0; border-bottom: 1px solid #eee; margin-bottom: 30px; position: sticky; top: 0; z-index: 10; }
     .st { display: flex; align-items: center; gap: 8px; color: #999; font-weight: 500; font-size: 0.9rem; }
     .st.active { color: var(--az); }
@@ -39,47 +38,54 @@
   </style>
 </head>
 <body>
-  <header><div class="logo">BOTCRAF<span>maker</span></div></header>
-  <div class="steps">
-    <div class="st active" id="st1"><i>1</i> Cliente</div>
-    <div class="st" id="st2_ind"><i>2</i> Líneas</div>
-    <div class="st" id="st3_ind"><i>3</i> Confirmar</div>
+  <header>
+    <img src=\"https://i.ibb.co/6R0D9qY/logo-botcrafmaker.png\" alt=\"BOTCRAFmaker\" class=\"logo-img\">
+  </header>
+  <div class=\"steps\">
+    <div class=\"st active\" id=\"st1\"><i>1</i> Cliente</div>
+    <div class=\"st\" id=\"st2_ind\"><i>2</i> Líneas</div>
+    <div class=\"st\" id=\"st3_ind\"><i>3</i> Confirmar</div>
   </div>
-  <div class="cont">
-    <div id="s1" class="card">
+  <div class=\"cont\">
+    <div id=\"s1\" class=\"card\">
       <h2>Datos del Cliente</h2>
-      <div class="fg"><label>Nombre del Cliente</label><input type="text" id="c_nom" placeholder="Ej. Empresa S.L."></div>
-      <div class="fg"><label>NIF / CIF</label><input type="text" id="c_nif" placeholder="B12345678"></div>
-      <div class="row">
-        <div class="fg"><label>Nº Presupuesto</label><input type="text" id="p_num"></div>
-        <div class="fg"><label>Fecha</label><input type="date" id="p_fec"></div>
+      <div class=\"fg\"><label>Nombre / Razón Social</label><input type=\"text\" id=\"c_nom\" placeholder=\"Ej. Empresa S.L.\"></div>
+      <div class=\"row\">
+        <div class=\"fg\"><label>NIF / CIF</label><input type=\"text\" id=\"c_nif\" placeholder=\"B12345678\"></div>
+        <div class=\"fg\"><label>Teléfono</label><input type=\"tel\" id=\"c_tel\" placeholder=\"600 000 000\"></div>
       </div>
-      <button class="btn" onclick="go(2)">Siguiente</button>
+      <div class=\"fg\"><label>Email</label><input type=\"email\" id=\"c_eml\" placeholder=\"correo@cliente.com\"></div>
+      <div class=\"fg\"><label>Dirección</label><input type=\"text\" id=\"c_dir\" placeholder=\"Calle Ejemplo, 123\"></div>
+      <div class=\"row\">
+        <div class=\"fg\"><label>Nº Presupuesto</label><input type=\"text\" id=\"p_num\"></div>
+        <div class=\"fg\"><label>Fecha</label><input type=\"date\" id=\"p_fec\"></div>
+      </div>
+      <button class=\"btn\" onclick=\"go(2)\">Siguiente</button>
     </div>
-    <div id="s2" class="card">
+    <div id=\"s2\" class=\"card\">
       <h2>Líneas del Presupuesto</h2>
-      <div id="lines_cont"></div>
-      <button class="btn btn-sec" onclick="addLine()" style="margin-bottom: 15px;">+ Añadir Línea</button>
-      <div class="row">
-        <button class="btn btn-sec" onclick="go(1)">Anterior</button>
-        <button class="btn" onclick="go(3)">Resumen</button>
+      <div id=\"lines_cont\"></div>
+      <button class=\"btn btn-sec\" onclick=\"addLine()\" style=\"margin-bottom: 15px;\">+ Añadir Línea</button>
+      <div class=\"row\">
+        <button class=\"btn btn-sec\" onclick=\"go(1)\">Anterior</button>
+        <button class=\"btn\" onclick=\"go(3)\">Resumen</button>
       </div>
     </div>
-    <div id="s3" class="card">
+    <div id=\"s3\" class=\"card\">
       <h2>Resumen Final</h2>
-      <div id="summary"></div>
-      <div class="total" id="sum_total"></div>
-      <div class="row" style="margin-top: 30px;">
-        <button class="btn btn-sec" onclick="go(2)">Editar</button>
-        <button class="btn" onclick="enviar()">Generar PDF</button>
+      <div id=\"summary\"></div>
+      <div class=\"total\" id=\"sum_total\"></div>
+      <div class=\"row\" style=\"margin-top: 30px;\">
+        <button class=\"btn btn-sec\" onclick=\"go(2)\">Editar</button>
+        <button class=\"btn\" onclick=\"enviar()\">Generar PDF</button>
       </div>
-      <div class="loading" id="load">Enviando a n8n...</div>
+      <div class=\"loading\" id=\"load\">Enviando a n8n...</div>
     </div>
-    <div id="success" class="card success-msg">
+    <div id=\"success\" class=\"card success-msg\">
       <i>✓</i>
       <h2>¡Presupuesto Enviado!</h2>
       <p>Se está generando el PDF. Recibirás una notificación en breve.</p>
-      <button class="btn" onclick="location.reload()" style="margin-top: 30px;">Crear Nuevo</button>
+      <button class=\"btn\" onclick=\"location.reload()\" style=\"margin-top: 30px;\">Crear Nuevo</button>
     </div>
   </div>
   <script>
@@ -121,12 +127,16 @@
     function showSummary() {
       const nom = document.getElementById('c_nom').value;
       const nif = document.getElementById('c_nif').value;
+      const tel = document.getElementById('c_tel').value;
+      const eml = document.getElementById('c_eml').value;
+      const dir = document.getElementById('c_dir').value;
       const num = document.getElementById('p_num').value;
       const fec = document.getElementById('p_fec').value;
       let html = '<div class=\"sum-row\"><span>Cliente:</span><strong>' + nom + '</strong></div>';
-      html += '<div class=\"sum-row\"><span>NIF:</span><strong>' + nif + '</strong></div>';
-      html += '<div class=\"sum-row\"><span>Nº:</span><strong>' + num + '</strong></div>';
-      html += '<div class=\"sum-row\"><span>Fecha:</span><strong>' + fec + '</strong></div><br><h3>Líneas:</h3>';
+      html += '<div class=\"sum-row\"><span>NIF/Tel:</span><strong>' + nif + ' / ' + tel + '</strong></div>';
+      html += '<div class=\"sum-row\"><span>Email:</span><strong>' + eml + '</strong></div>';
+      html += '<div class=\"sum-row\"><span>Dirección:</span><strong>' + dir + '</strong></div>';
+      html += '<div class=\"sum-row\"><span>Presupuesto:</span><strong>' + num + ' (' + fec + ')</strong></div><br><h3>Líneas:</h3>';
       document.querySelectorAll('.line').forEach(l => {
         const d = l.querySelector('.l_desc').value;
         const c = l.querySelector('.l_cant').value;
@@ -140,10 +150,13 @@
       const load = document.getElementById('load');
       load.style.display = 'block';
       const data = {
-        emisor: "Pedro Juan Muñoz Esteve",
-        nif_emisor: "33468269A",
+        emisor: \"Pedro Juan Muñoz Esteve\",
+        nif_emisor: \"33468269A\",
         cliente: document.getElementById('c_nom').value,
         nif_cliente: document.getElementById('c_nif').value,
+        tel_cliente: document.getElementById('c_tel').value,
+        email_cliente: document.getElementById('c_eml').value,
+        dir_cliente: document.getElementById('c_dir').value,
         numero: document.getElementById('p_num').value,
         fecha: document.getElementById('p_fec').value,
         total: calcTotal(),
@@ -162,7 +175,7 @@
         document.getElementById('s3').style.display = 'none';
         document.getElementById('success').style.display = 'block';
       } catch (e) {
-        alert('Error al enviar. Revisa el webhook en el código.');
+        alert('Error al enviar. Revisa el webhook.');
         load.style.display = 'none';
       }
     }

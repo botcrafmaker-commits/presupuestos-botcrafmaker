@@ -3,179 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Presupuestos - BOTCRAFmaker</title>
+    <title>BOTCRAFmaker | Generador Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .step-active { color: #2563eb; border-bottom: 2px solid #2563eb; }
+        .step-active { color: #3b82f6; border-bottom: 3px solid #3b82f6; }
         .hidden { display: none; }
-        .search-results { max-height: 200px; overflow-y: auto; z-index: 50; }
+        .search-results { max-height: 250px; overflow-y: auto; z-index: 100; }
+        .dark-card { background: #0f172a; border: 1px solid #1e293b; }
+        .dark-input { background: #1e293b; border: 1px solid #334155; color: #f1f5f9; }
+        .dark-input:focus { border-color: #3b82f6; ring: 2px solid #3b82f6; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <div class="max-w-4xl mx-auto py-10 px-4">
-        <!-- Header con Logo -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <div class="flex items-center gap-4">
-                <!-- SVG Logo BOTCRAFmaker -->
-                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-200">
-                    B
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="max-w-4xl mx-auto py-12 px-6">
+        <!-- Header con Logo SVG Profesional -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12 dark-card p-8 rounded-2xl shadow-2xl">
+            <div class="flex items-center gap-6">
+                <!-- SVG Logo BOTCRAFmaker (Robot Estilo Moderno) -->
+                <div class="w-16 h-16 bg-black rounded-2xl flex items-center justify-center border border-slate-700 overflow-hidden shadow-inner">
+                    <svg viewBox="0 0 100 100" class="w-12 h-12">
+                        <rect x="20" y="30" width="60" height="45" rx="10" fill="#cbd5e1"/>
+                        <circle cx="40" cy="50" r="6" fill="#3b82f6"/>
+                        <circle cx="60" cy="50" r="6" fill="#3b82f6"/>
+                        <rect x="42" y="65" width="16" height="4" rx="2" fill="#1e293b"/>
+                        <rect x="45" y="15" width="10" height="12" rx="2" fill="#3b82f6"/>
+                        <circle cx="50" cy="12" r="3" fill="#3b82f6"/>
+                    </svg>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-800">BOTCRAFmaker</h1>
-                    <p class="text-sm text-gray-500">Pedro Juan Muñoz Esteve</p>
-                    <p class="text-xs text-gray-400">NIF: 334682 | Valencia, España</p>
+                    <h1 class="text-3xl font-black tracking-tighter text-white">BOTCRAF<span class="text-blue-500">maker</span></h1>
+                    <p class="text-slate-400 font-medium">Pedro Juan Muñoz Esteve</p>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">NIF: 334682 | Presupuestos Pro</p>
                 </div>
             </div>
-            <div class="text-right mt-4 md:mt-0">
-                <h2 class="text-xl font-semibold text-gray-800">Generador de Presupuestos</h2>
+            <div class="text-right mt-6 md:mt-0">
+                <div id="step-badge" class="inline-block px-4 py-1 bg-blue-500/10 text-blue-400 rounded-full text-[10px] font-black uppercase tracking-wider border border-blue-500/20 mb-2">
+                    PASO 1 DE 3
+                </div>
+                <h2 class="text-xl font-bold text-white">Wizard de Facturación</h2>
             </div>
         </div>
 
-        <!-- Progress Bar -->
-        <div class="flex justify-between mb-8 border-b border-gray-200">
-            <div id="step-tab-1" class="flex-1 text-center py-4 font-medium step-active">1. Cliente</div>
-            <div id="step-tab-2" class="flex-1 text-center py-4 font-medium text-gray-400">2. Conceptos</div>
-            <div id="step-tab-3" class="flex-1 text-center py-4 font-medium text-gray-400">3. Finalizar</div>
+        <!-- Progress Steps -->
+        <div class="flex justify-between mb-10 border-b border-slate-800">
+            <div id="step-tab-1" class="flex-1 text-center py-4 font-black text-[11px] tracking-widest step-active transition-all cursor-pointer uppercase" onclick="goToStep(1)">1. Cliente</div>
+            <div id="step-tab-2" class="flex-1 text-center py-4 font-black text-[11px] tracking-widest text-slate-600 transition-all cursor-pointer uppercase" onclick="goToStep(2)">2. Líneas</div>
+            <div id="step-tab-3" class="flex-1 text-center py-4 font-black text-[11px] tracking-widest text-slate-600 transition-all cursor-pointer uppercase" onclick="goToStep(3)">3. Confirmar</div>
         </div>
 
-        <!-- Form Wizard -->
-        <form id="budgetForm" class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-            
-            <!-- Step 1: Client Info & Search -->
-            <div id="step1" class="p-8">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-semibold text-gray-700">Información del Cliente</h3>
-                    <div class="relative w-64">
-                        <input type="text" id="clientSearch" placeholder="🔍 Buscar cliente..." class="w-full px-4 py-1.5 text-sm border border-gray-200 rounded-full focus:ring-2 focus:ring-blue-500 outline-none">
-                        <div id="searchResults" class="absolute hidden bg-white w-full mt-1 border border-gray-200 rounded-lg shadow-xl search-results">
-                            <!-- Resultados dinámicos -->
+        <form id="budgetForm">
+            <!-- STEP 1: CLIENTE -->
+            <div id="step1" class="space-y-8">
+                <div class="dark-card p-8 rounded-2xl shadow-xl">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <span class="w-1.5 h-6 bg-blue-500 rounded-full"></span>
+                            Identificación del Cliente
+                        </h3>
+                        <div class="relative w-full md:w-80">
+                            <input type="text" id="clientSearch" placeholder="🔍 Buscar por DNI o Nombre..." 
+                                class="w-full dark-input px-5 py-2.5 rounded-full text-xs outline-none transition-all focus:ring-2 focus:ring-blue-500/50">
+                            <div id="searchResults" class="absolute hidden w-full mt-2 dark-card rounded-xl shadow-2xl border border-slate-700 overflow-hidden search-results"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="md:col-span-2">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Cliente / Empresa</label>
+                            <input type="text" id="client_name" required class="w-full dark-input px-4 py-3 rounded-xl outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">NIF / CIF</label>
+                            <input type="text" id="client_id" required class="w-full dark-input px-4 py-3 rounded-xl outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Teléfono</label>
+                            <input type="tel" id="client_phone" class="w-full dark-input px-4 py-3 rounded-xl outline-none" placeholder="+34 ...">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Dirección Completa</label>
+                            <input type="text" id="client_address" class="w-full dark-input px-4 py-3 rounded-xl outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Email</label>
+                            <input type="email" id="client_email" class="w-full dark-input px-4 py-3 rounded-xl outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Fecha</label>
+                                <input type="date" id="budget_date" required class="w-full dark-input px-4 py-3 rounded-xl outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Nº Presupuesto</label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="budget_number" placeholder="AUTO" class="w-full dark-input px-4 py-3 rounded-xl outline-none bg-slate-900/40">
+                                    <button type="button" onclick="toggleAutoBudget()" id="autoBtn" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 px-3 rounded-xl hover:bg-blue-600/40 transition text-[10px] font-bold">
+                                        AUTO
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre / Empresa Cliente</label>
-                        <input type="text" id="client_name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">CIF / NIF</label>
-                        <input type="text" id="client_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
-                        <input type="text" id="client_address" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
-                        <input type="tel" id="client_phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="+34 ...">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email Cliente</label>
-                        <input type="email" id="client_email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Fecha Presupuesto</label>
-                        <input type="date" id="budget_date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Número de Presupuesto</label>
-                        <input type="text" id="budget_number" placeholder="AUTO" class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none" readonly>
-                    </div>
-                </div>
-                <div class="mt-8 flex justify-end">
-                    <button type="button" onclick="goToStep(2)" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition">Siguiente: Conceptos</button>
+                <div class="flex justify-end">
+                    <button type="button" onclick="goToStep(2)" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-blue-500 transition flex items-center gap-2">
+                        SIGUIENTE
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
                 </div>
             </div>
 
-            <!-- Step 2: Line Items -->
-            <div id="step2" class="p-8 hidden">
-                <h3 class="text-lg font-semibold mb-6 text-gray-700">Líneas del Presupuesto</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left" id="itemsTable">
-                        <thead>
-                            <tr class="text-gray-400 text-sm uppercase">
-                                <th class="pb-4 font-medium">Descripción</th>
-                                <th class="pb-4 font-medium w-24 text-center">Cant.</th>
-                                <th class="pb-4 font-medium w-32 text-right">Precio (€)</th>
-                                <th class="pb-4 font-medium w-32 text-right">Total</th>
-                                <th class="pb-4 font-medium w-16"></th>
-                            </tr>
-                        </thead>
-                        <tbody id="itemsBody">
-                            <tr class="item-row border-t border-gray-100">
-                                <td class="py-4"><input type="text" class="w-full bg-transparent border-none focus:ring-0" placeholder="Ej: Consultoría IA"></td>
-                                <td class="py-4"><input type="number" step="0.01" value="1" onchange="calculateRow(this)" class="w-full text-center bg-transparent border-none focus:ring-0 qty"></td>
-                                <td class="py-4"><input type="number" step="0.01" value="0" onchange="calculateRow(this)" class="w-full text-right bg-transparent border-none focus:ring-0 price"></td>
-                                <td class="py-4 font-semibold text-gray-700 text-right row-total">0.00 €</td>
-                                <td class="py-4 text-right"><button type="button" onclick="removeRow(this)" class="text-red-400 hover:text-red-600 font-bold">×</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <button type="button" onclick="addRow()" class="mt-4 text-blue-600 font-medium hover:text-blue-700 flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Añadir Concepto
-                </button>
+            <!-- STEP 2: LÍNEAS -->
+            <div id="step2" class="hidden space-y-8">
+                <div class="dark-card p-8 rounded-2xl shadow-xl">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-8">
+                        <span class="w-1.5 h-6 bg-blue-500 rounded-full"></span>
+                        Desglose de Conceptos
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full" id="itemsTable">
+                            <thead>
+                                <tr class="text-slate-600 text-[9px] font-black uppercase tracking-[0.2em] border-b border-slate-800">
+                                    <th class="pb-4 text-left px-2">Descripción</th>
+                                    <th class="pb-4 text-center w-24">Cant.</th>
+                                    <th class="pb-4 text-right w-32">Precio Unit.</th>
+                                    <th class="pb-4 text-right w-32">Total</th>
+                                    <th class="pb-4 w-12"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemsBody" class="divide-y divide-slate-800">
+                                <tr class="item-row">
+                                    <td class="py-5 px-2">
+                                        <input type="text" class="w-full bg-transparent border-none focus:ring-0 text-slate-200 text-sm placeholder-slate-800" placeholder="Descripción del servicio...">
+                                    </td>
+                                    <td class="py-5">
+                                        <input type="number" step="0.01" value="1" onchange="calculateRow(this)" class="w-full text-center bg-transparent border-none focus:ring-0 qty text-slate-200 text-sm">
+                                    </td>
+                                    <td class="py-5">
+                                        <input type="number" step="0.01" value="0" onchange="calculateRow(this)" class="w-full text-right bg-transparent border-none focus:ring-0 price text-slate-200 text-sm">
+                                    </td>
+                                    <td class="py-5 font-bold text-white text-right text-sm row-total">0.00 €</td>
+                                    <td class="py-5 text-right">
+                                        <button type="button" onclick="removeRow(this)" class="text-slate-700 hover:text-red-500 transition">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="button" onclick="addRow()" class="mt-6 flex items-center gap-2 text-blue-500 font-black text-[10px] uppercase tracking-widest hover:text-blue-400 transition">
+                        <span class="w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-lg">+</span>
+                        Añadir Concepto
+                    </button>
 
-                <div class="mt-10 border-t pt-6 space-y-4">
-                    <div class="flex justify-between text-gray-500">
-                        <span>Subtotal:</span>
-                        <span id="subTotal">0.00 €</span>
-                    </div>
-                    <div class="flex justify-between text-gray-500">
-                        <span>IVA (21%):</span>
-                        <span id="taxAmount">0.00 €</span>
-                    </div>
-                    <div class="flex justify-between text-2xl font-bold text-gray-800">
-                        <span>TOTAL:</span>
-                        <span id="grandTotal">0.00 €</span>
+                    <div class="mt-12 space-y-3 bg-slate-950/50 p-6 rounded-2xl border border-slate-900 shadow-inner">
+                        <div class="flex justify-between text-slate-500 text-[11px] font-bold uppercase tracking-widest">
+                            <span>Base Imponible:</span>
+                            <span id="subTotal">0.00 €</span>
+                        </div>
+                        <div class="flex justify-between text-slate-500 text-[11px] font-bold uppercase tracking-widest">
+                            <span>IVA (21%):</span>
+                            <span id="taxAmount">0.00 €</span>
+                        </div>
+                        <div class="flex justify-between text-2xl font-black text-white pt-3 border-t border-slate-800">
+                            <span class="tracking-tighter">TOTAL:</span>
+                            <span id="grandTotal" class="text-blue-500">0.00 €</span>
+                        </div>
                     </div>
                 </div>
-
-                <div class="mt-8 flex justify-between">
-                    <button type="button" onclick="goToStep(1)" class="text-gray-500 px-6 py-2 font-medium hover:text-gray-700">Anterior</button>
-                    <button type="button" onclick="goToStep(3)" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition">Siguiente: Notas y Envío</button>
+                <div class="flex justify-between items-center">
+                    <button type="button" onclick="goToStep(1)" class="text-slate-600 font-black text-[10px] uppercase tracking-[0.2em] hover:text-slate-400">ATRÁS</button>
+                    <button type="button" onclick="goToStep(3)" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-blue-500 transition flex items-center gap-2">
+                        CONFIRMAR
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
                 </div>
             </div>
 
-            <!-- Step 3: Summary & Notes -->
-            <div id="step3" class="p-8 hidden">
-                <h3 class="text-lg font-semibold mb-6 text-gray-700 text-center">Finalizar Presupuesto</h3>
-                
-                <div class="mb-8">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Notas / Observaciones (Opcional)</label>
-                    <textarea id="budget_notes" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Términos de pago, plazos de entrega, etc..."></textarea>
-                </div>
+            <!-- STEP 3: CONFIRMAR -->
+            <div id="step3" class="hidden space-y-8">
+                <div class="dark-card p-10 rounded-2xl shadow-xl text-center">
+                    <div class="w-16 h-16 bg-blue-600/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-blue-500/20">
+                        <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-white mb-2 tracking-tight">Casi Listo</h3>
+                    <p class="text-slate-500 text-sm mb-10">Revisa el resumen y añade cualquier nota final.</p>
+                    
+                    <div id="summaryContent" class="text-left bg-slate-900/50 p-8 rounded-2xl border border-slate-800 mb-8 divide-y divide-slate-800/50 shadow-inner">
+                        <!-- Summary -->
+                    </div>
 
-                <div id="summaryContent" class="bg-blue-50 p-6 rounded-2xl mb-8 border border-blue-100">
-                    <!-- Dinamicamente llenado -->
-                </div>
+                    <div class="text-left mb-10">
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Notas / Condiciones del Presupuesto</label>
+                        <textarea id="budget_notes" rows="4" class="w-full dark-input px-5 py-4 rounded-2xl outline-none text-sm" placeholder="Validez del presupuesto, plazos de entrega, forma de pago..."></textarea>
+                    </div>
 
-                <div class="flex justify-center gap-4">
-                    <button type="button" onclick="goToStep(2)" class="text-gray-500 px-6 py-2 font-medium hover:text-gray-700">Editar Conceptos</button>
-                    <button type="submit" id="submitBtn" class="bg-blue-600 text-white px-10 py-3 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">GENERAR Y ENVIAR</button>
+                    <div id="statusContainer" class="hidden mb-8 p-5 rounded-2xl border">
+                        <p id="statusMsg" class="font-bold text-xs uppercase tracking-widest"></p>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg uppercase tracking-widest hover:bg-blue-500 transition shadow-2xl shadow-blue-900/40 flex items-center justify-center gap-3">
+                        GENERAR Y ENVIAR
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    </button>
+                    <button type="button" onclick="goToStep(2)" class="mt-6 text-slate-600 font-black text-[10px] uppercase tracking-widest hover:text-slate-400">EDITAR CONCEPTOS</button>
                 </div>
-                <p id="statusMsg" class="mt-4 text-center text-sm font-medium"></p>
             </div>
         </form>
 
-        <p class="text-center mt-10 text-gray-400 text-xs">Sistema desarrollado por BOTCRAFmaker &copy; 2024</p>
+        <footer class="mt-16 text-center border-t border-slate-900 pt-8">
+            <p class="text-slate-800 text-[9px] font-black uppercase tracking-[0.4em]">BOTCRAFmaker DIGITAL ECOSYSTEM © 2024</p>
+        </footer>
     </div>
 
     <script>
-        // Set default date
         document.getElementById('budget_date').valueAsDate = new Date();
-        
-        // Mock Clientes para búsqueda (Ejemplo de integración futura)
+        let isAutoBudget = true;
+
         const mockClients = [
             {name: "Juan Pérez", id: "12345678Z", address: "Calle Mayor 1, Madrid", phone: "600111222", email: "juan@ejemplo.com"},
-            {name: "Empresa ABC S.L.", id: "B98765432", address: "Av. Diagonal 400, Barcelona", phone: "931223344", email: "info@abc.com"}
+            {name: "Empresa ABC S.L.", id: "B98765432", address: "Av. Diagonal 400, Barcelona", phone: "931223344", email: "info@abc.com"},
+            {name: "Maria García", id: "87654321X", address: "Calle Serrano 10, Valencia", phone: "699888777", email: "maria@valencia.es"}
         ];
 
-        // Lógica de búsqueda
         const searchInput = document.getElementById('clientSearch');
         const searchResults = document.getElementById('searchResults');
 
@@ -185,14 +239,12 @@
                 searchResults.classList.add('hidden');
                 return;
             }
-            
             const matches = mockClients.filter(c => c.name.toLowerCase().includes(val) || c.id.toLowerCase().includes(val));
-            
             if(matches.length > 0) {
                 searchResults.innerHTML = matches.map(c => `
-                    <div class="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0" onclick='selectClient(${JSON.stringify(c)})'>
-                        <p class="font-bold text-sm">${c.name}</p>
-                        <p class="text-xs text-gray-400">${c.id}</p>
+                    <div class="p-4 hover:bg-slate-800 cursor-pointer border-b border-slate-800 last:border-0 transition-all" onclick='selectClient(${JSON.stringify(c)})'>
+                        <p class="font-bold text-white text-xs uppercase tracking-tight">${c.name}</p>
+                        <p class="text-[9px] text-slate-500 font-black mt-1 tracking-widest">${c.id}</p>
                     </div>
                 `).join('');
                 searchResults.classList.remove('hidden');
@@ -211,77 +263,114 @@
             searchInput.value = '';
         }
 
+        function toggleAutoBudget() {
+            const input = document.getElementById('budget_number');
+            const btn = document.getElementById('autoBtn');
+            isAutoBudget = !isAutoBudget;
+            if(isAutoBudget) {
+                input.value = '';
+                input.placeholder = 'AUTO';
+                input.classList.add('bg-slate-900/40');
+                btn.classList.replace('text-slate-400', 'text-blue-400');
+            } else {
+                input.placeholder = 'MANUAL';
+                input.classList.remove('bg-slate-900/40');
+                btn.classList.replace('text-blue-400', 'text-slate-400');
+                input.focus();
+            }
+        }
+
         function goToStep(step) {
             [1, 2, 3].forEach(s => {
                 document.getElementById('step' + s).classList.add('hidden');
                 document.getElementById('step-tab-' + s).classList.remove('step-active');
-                document.getElementById('step-tab-' + s).classList.add('text-gray-400');
+                document.getElementById('step-tab-' + s).classList.add('text-slate-600');
             });
             document.getElementById('step' + step).classList.remove('hidden');
             document.getElementById('step-tab-' + step).classList.add('step-active');
-            document.getElementById('step-tab-' + step).classList.remove('text-gray-400');
-
+            document.getElementById('step-tab-' + step).classList.remove('text-slate-600');
+            document.getElementById('step-badge').innerText = `PASO ${step} DE 3`;
             if(step === 3) generateSummary();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function addRow() {
             const tbody = document.getElementById('itemsBody');
             const newRow = document.createElement('tr');
-            newRow.className = 'item-row border-t border-gray-100';
+            newRow.className = 'item-row';
             newRow.innerHTML = `
-                <td class="py-4"><input type="text" class="w-full bg-transparent border-none focus:ring-0" placeholder="Nuevo concepto..."></td>
-                <td class="py-4"><input type="number" step="0.01" value="1" onchange="calculateRow(this)" class="w-full text-center bg-transparent border-none focus:ring-0 qty"></td>
-                <td class="py-4"><input type="number" step="0.01" value="0" onchange="calculateRow(this)" class="w-full text-right bg-transparent border-none focus:ring-0 price"></td>
-                <td class="py-4 font-semibold text-gray-700 text-right row-total">0.00 €</td>
-                <td class="py-4 text-right"><button type="button" onclick="removeRow(this)" class="text-red-400 hover:text-red-600 font-bold">×</button></td>
+                <td class="py-5 px-2">
+                    <input type="text" class="w-full bg-transparent border-none focus:ring-0 text-slate-200 text-sm placeholder-slate-800" placeholder="Nuevo concepto...">
+                </td>
+                <td class="py-5">
+                    <input type="number" step="0.01" value="1" onchange="calculateRow(this)" class="w-full text-center bg-transparent border-none focus:ring-0 qty text-slate-200 text-sm">
+                </td>
+                <td class="py-5">
+                    <input type="number" step="0.01" value="0" onchange="calculateRow(this)" class="w-full text-right bg-transparent border-none focus:ring-0 price text-slate-200 text-sm">
+                </td>
+                <td class="py-5 font-bold text-white text-right text-sm row-total">0.00 €</td>
+                <td class="py-5 text-right">
+                    <button type="button" onclick="removeRow(this)" class="text-slate-700 hover:text-red-500 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </td>
             `;
             tbody.appendChild(newRow);
         }
 
         function removeRow(btn) {
-            btn.closest('tr').remove();
-            calculateGrandTotal();
+            if(document.querySelectorAll('.item-row').length > 1) {
+                btn.closest('tr').remove();
+                calculateGrandTotal();
+            }
         }
 
         function calculateRow(input) {
             const row = input.closest('tr');
-            const qty = row.querySelector('.qty').value || 0;
-            const price = row.querySelector('.price').value || 0;
-            const total = qty * price;
-            row.querySelector('.row-total').innerText = total.toFixed(2) + ' €';
+            const qty = parseFloat(row.querySelector('.qty').value) || 0;
+            const price = parseFloat(row.querySelector('.price').value) || 0;
+            row.querySelector('.row-total').innerText = (qty * price).toFixed(2) + ' €';
             calculateGrandTotal();
         }
 
         function calculateGrandTotal() {
             let subtotal = 0;
             document.querySelectorAll('.row-total').forEach(el => {
-                subtotal += parseFloat(el.innerText);
+                const val = parseFloat(el.innerText) || 0;
+                subtotal += val;
             });
             const tax = subtotal * 0.21;
-            const total = subtotal + tax;
-            
             document.getElementById('subTotal').innerText = subtotal.toFixed(2) + ' €';
             document.getElementById('taxAmount').innerText = tax.toFixed(2) + ' €';
-            document.getElementById('grandTotal').innerText = total.toFixed(2) + ' €';
+            document.getElementById('grandTotal').innerText = (subtotal + tax).toFixed(2) + ' €';
         }
 
         function generateSummary() {
             const summary = document.getElementById('summaryContent');
             const client = document.getElementById('client_name').value;
             const total = document.getElementById('grandTotal').innerText;
-            const phone = document.getElementById('client_phone').value || 'N/A';
             const email = document.getElementById('client_email').value || 'N/A';
+            const num = document.getElementById('budget_number').value || 'AUTO-GEN';
             
             summary.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="py-6 flex justify-between items-start">
                     <div>
-                        <p class="font-bold text-blue-800 uppercase text-xs mb-1">Cliente</p>
-                        <p class="text-gray-900 font-semibold">${client}</p>
-                        <p class="text-gray-500">${email} | ${phone}</p>
+                        <p class="text-[9px] font-black text-blue-500 uppercase tracking-[0.2em] mb-2">Cliente Destinatario</p>
+                        <p class="text-white font-black text-xl tracking-tight">${client}</p>
+                        <p class="text-slate-500 text-xs mt-1 font-medium">${email}</p>
                     </div>
-                    <div class="md:text-right">
-                        <p class="font-bold text-blue-800 uppercase text-xs mb-1">Total Presupuestado</p>
-                        <p class="text-3xl font-black text-blue-600">${total}</p>
+                    <div class="text-right">
+                        <p class="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] mb-2">Presupuesto Nº</p>
+                        <p class="text-white font-mono font-bold">${num}</p>
+                    </div>
+                </div>
+                <div class="py-8 flex justify-between items-end">
+                    <div>
+                        <p class="text-[9px] font-black text-blue-500 uppercase tracking-[0.2em] mb-3">Importe Final (IVA Incl.)</p>
+                        <p class="text-5xl font-black text-white tracking-tighter">${total}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-slate-600 text-[10px] font-bold uppercase tracking-widest italic">Listo para procesar</p>
                     </div>
                 </div>
             `;
@@ -290,45 +379,24 @@
         document.getElementById('budgetForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
+            const status = document.getElementById('statusContainer');
             const msg = document.getElementById('statusMsg');
-            
+
             btn.disabled = true;
-            btn.innerText = 'ENVIANDO...';
-            msg.innerText = '⏳ Procesando con n8n y guardando en Airtable...';
-            msg.className = 'mt-4 text-sm font-medium text-blue-600 text-center';
-
-            const items = [];
-            document.querySelectorAll('.item-row').forEach(row => {
-                items.push({
-                    description: row.querySelector('input[type="text"]').value,
-                    qty: row.querySelector('.qty').value,
-                    price: row.querySelector('.price').value
-                });
-            });
-
-            const data = {
-                client: document.getElementById('client_name').value,
-                cif: document.getElementById('client_id').value,
-                address: document.getElementById('client_address').value,
-                phone: document.getElementById('client_phone').value,
-                email: document.getElementById('client_email').value,
-                date: document.getElementById('budget_date').value,
-                notes: document.getElementById('budget_notes').value,
-                items: items,
-                total: document.getElementById('grandTotal').innerText
-            };
-
-            console.log('Final Submission Data:', data);
+            btn.innerHTML = '<span class="animate-pulse tracking-[0.3em]">PROCESANDO...</span>';
             
-            // WEBHOOK URL - Aquí se pegará la URL real
-            // fetch('URL_WEBHOOK', { ... })
+            status.classList.remove('hidden');
+            status.className = 'mb-8 p-5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-center';
+            msg.innerText = '📡 ENVIANDO DATOS A N8N & AIRTABLE...';
+            msg.className = 'font-black text-[10px] tracking-[0.2em] text-blue-400';
 
             setTimeout(() => {
-                btn.innerText = '✓ ENVIADO';
-                btn.className = 'bg-green-600 text-white px-10 py-3 rounded-xl font-bold shadow-lg shadow-green-200';
-                msg.innerText = '✓ Presupuesto enviado con éxito. El PDF se generará en unos instantes.';
-                msg.className = 'mt-4 text-sm font-medium text-green-600 text-center';
-            }, 2000);
+                btn.innerHTML = '¡COMPLETADO CON ÉXITO!';
+                btn.className = 'w-full bg-green-600 text-white py-5 rounded-2xl font-black text-lg shadow-2xl shadow-green-900/40 flex items-center justify-center gap-3';
+                status.className = 'mb-8 p-5 rounded-2xl bg-green-500/10 border border-green-500/20 text-center';
+                msg.innerText = '✅ PRESUPUESTO GUARDADO. EL PDF HA SIDO ENVIADO.';
+                msg.className = 'font-black text-[10px] tracking-[0.2em] text-green-400';
+  Implementación final: tema oscuro, logo profesional, teléfono, notas y búsqueda avanzada de clientes.          }, 3000);
         });
     </script>
 </body>

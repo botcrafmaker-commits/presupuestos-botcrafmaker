@@ -3,83 +3,170 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BOTCRAFmaker · Nuevo Presupuesto</title>
+  <title>BOTCRAFmaker · Presupuestos Profesionales</title>
   <style>
-    :root { --az: #1a6dff; --azd: #1254cc; --ng: #111; --gr: #f4f6fa; --gb: #dde1ea; --tx: #222; --er: #e03131; --ok: #2f9e44; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--gr); color: var(--tx); min-height: 100vh; }
-    header { background: var(--ng); padding: 18px 28px; display: flex; align-items: center; }
-    .logo { color: #fff; font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; }
+    :root { --az: #1a6dff; --az-d: #1254cc; --ng: #111; --gr: #f4f6fa; --tx: #333; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: var(--gr); color: var(--tx); min-height: 100vh; }
+    header { background: var(--ng); padding: 15px 30px; display: flex; align-items: center; }
+    .logo { color: #fff; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
     .logo span { color: var(--az); }
-    .pw { background: #fff; border-bottom: 1px solid var(--gb); padding: 0 28px; }
-    .ps { display: flex; max-width: 740px; margin: 0 auto; }
-    .st { flex: 1; padding: 14px 8px; text-align: center; font-size: .8rem; font-weight: 600; color: #999; border-bottom: 3px solid transparent; user-select: none; }
-    .st.active { color: var(--az); border-bottom-color: var(--az); }
-    .st.done { color: var(--ok); border-bottom-color: var(--ok); }
-    .sn { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #e9ecef; color: #999; font-size: .72rem; font-weight: 700; margin-right: 5px; }
-    .st.active .sn { background: var(--az); color: #fff; }
-    .st.done .sn { background: var(--ok); color: #fff; }
-    .wrap { max-width: 740px; margin: 28px auto; padding: 0 14px 60px; }
-    .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 14px rgba(0,0,0,.07); padding: 28px; margin-bottom: 18px; }
-    .card h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 5px; }
-    .sub { font-size: .82rem; color: #777; margin-bottom: 22px; }
-    .fr { display: flex; gap: 14px; margin-bottom: 14px; flex-wrap: wrap; }
-    .fg { flex: 1; min-width: 150px; display: flex; flex-direction: column; gap: 4px; }
-    .fg label { font-size: .76rem; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: .4px; }
-    .fg input, .fg select { border: 1.5px solid var(--gb); border-radius: 7px; padding: 9px 11px; font-size: .93rem; outline: none; transition: border .15s; }
-    .fg input:focus, .fg select:focus { border-color: var(--az); }
-    .lh { display: grid; grid-template-columns: 2fr 62px 88px 62px 78px 32px; gap: 5px; padding: 0 8px 6px; border-bottom: 2px solid var(--gb); margin-bottom: 6px; }
-    .lh span { font-size: .7rem; font-weight: 700; color: #888; text-transform: uppercase; }
-    .lr { display: grid; grid-template-columns: 2fr 62px 88px 62px 78px 32px; gap: 5px; align-items: center; margin-bottom: 5px; padding: 7px; background: var(--gr); border-radius: 7px; }
-    .lr input, .lr select { border: 1.5px solid var(--gb); border-radius: 6px; padding: 6px 7px; font-size: .86rem; background: #fff; width: 100%; outline: none; }
-    .bdel { background: none; border: none; color: #ccc; font-size: 1rem; cursor: pointer; }
-    .tb { background: var(--gr); border-radius: 10px; padding: 16px 18px; margin-top: 18px; }
-    .tr { display: flex; justify-content: space-between; font-size: .88rem; padding: 3px 0; color: #555; }
-    .tr.tf { border-top: 2px solid var(--gb); margin-top: 7px; padding-top: 9px; font-size: 1.1rem; font-weight: 700; color: var(--ng); }
-    .bp { background: var(--az); color: #fff; border: none; border-radius: 8px; padding: 12px 26px; font-size: .96rem; font-weight: 700; cursor: pointer; }
-    .bp:hover { background: var(--azd); }
-    #s1, #s2, #s3 { display: none; }
-    #s1.active, #s2.active, #s3.active { display: block; }
-    .hidden { display: none !important; }
+    .steps { display: flex; justify-content: space-around; background: #fff; padding: 20px 0; border-bottom: 1px solid #eee; margin-bottom: 30px; position: sticky; top: 0; z-index: 10; }
+    .st { display: flex; align-items: center; gap: 8px; color: #999; font-weight: 500; font-size: 0.9rem; }
+    .st.active { color: var(--az); }
+    .st i { width: 28px; height: 28px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; font-style: normal; }
+    .st.active i { background: var(--az); color: #fff; }
+    .cont { max-width: 600px; margin: 0 auto; padding: 0 20px 50px; }
+    .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    h2 { font-size: 1.25rem; margin-bottom: 25px; font-weight: 600; color: #000; }
+    .fg { margin-bottom: 20px; }
+    label { display: block; font-size: 0.75rem; font-weight: 700; color: #777; text-transform: uppercase; margin-bottom: 8px; }
+    input, select, textarea { width: 100%; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; transition: border-color 0.2s; outline: none; }
+    input:focus { border-color: var(--az); }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .btn { background: var(--az); color: #fff; border: none; padding: 14px 30px; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; transition: background 0.2s; }
+    .btn:hover { background: var(--az-d); }
+    .btn-sec { background: transparent; color: #666; border: 1px solid #ddd; margin-top: 10px; }
+    .btn-sec:hover { background: #f9f9f9; }
+    .line { border-top: 1px solid #f0f0f0; padding-top: 20px; margin-top: 20px; position: relative; }
+    .btn-del { position: absolute; top: 20px; right: 0; color: #ff4d4d; border: none; background: none; font-size: 0.8rem; cursor: pointer; }
+    #s2, #s3, #success { display: none; }
+    .sum-row { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed #eee; }
+    .total { font-size: 1.3rem; font-weight: 700; color: var(--az); text-align: right; margin-top: 20px; }
+    .loading { display: none; text-align: center; margin-top: 20px; color: var(--az); font-weight: 600; }
+    .success-msg { text-align: center; padding: 40px 20px; }
+    .success-msg i { font-size: 3rem; color: #2ecc71; display: block; margin-bottom: 20px; }
   </style>
 </head>
 <body>
   <header><div class="logo">BOTCRAF<span>maker</span></div></header>
-  <div class="pw"><div class="ps"><div class="st active" id="t1"><span class="sn">1</span>Cliente</div><div class="st" id="t2"><span class="sn">2</span>Líneas</div><div class="st" id="t3"><span class="sn">3</span>Confirmar</div></div></div>
-  <div class="wrap">
-    <div id="s1" class="active">
-      <div class="card">
-        <h2>Datos del cliente</h2>
-        <div class="fr"><div class="fg"><label>Nombre</label><input type="text" id="cli-nom"></div><div class="fg"><label>NIF</label><input type="text" id="cli-nif"></div></div>
+  <div class="steps">
+    <div class="st active" id="st1"><i>1</i> Cliente</div>
+    <div class="st" id="st2_ind"><i>2</i> Líneas</div>
+    <div class="st" id="st3_ind"><i>3</i> Confirmar</div>
+  </div>
+  <div class="cont">
+    <div id="s1" class="card">
+      <h2>Datos del Cliente</h2>
+      <div class="fg"><label>Nombre del Cliente</label><input type="text" id="c_nom" placeholder="Ej. Empresa S.L."></div>
+      <div class="fg"><label>NIF / CIF</label><input type="text" id="c_nif" placeholder="B12345678"></div>
+      <div class="row">
+        <div class="fg"><label>Nº Presupuesto</label><input type="text" id="p_num"></div>
+        <div class="fg"><label>Fecha</label><input type="date" id="p_fec"></div>
       </div>
-      <button class="bp" onclick="next(2)">Siguiente</button>
+      <button class="btn" onclick="go(2)">Siguiente</button>
     </div>
-    <div id="s2">
-      <div class="card">
-        <h2>Líneas</h2>
-        <div class="lh"><span>Concepto</span><span>Cant</span><span>Precio</span><span>Desc</span><span>IVA</span><span></span></div>
-        <div id="l-cont"></div>
-        <button class="bp" style="background:none;color:var(--az);border:1px dashed var(--az)" onclick="add()">+ Línea</button>
+    <div id="s2" class="card">
+      <h2>Líneas del Presupuesto</h2>
+      <div id="lines_cont"></div>
+      <button class="btn btn-sec" onclick="addLine()" style="margin-bottom: 15px;">+ Añadir Línea</button>
+      <div class="row">
+        <button class="btn btn-sec" onclick="go(1)">Anterior</button>
+        <button class="btn" onclick="go(3)">Resumen</button>
       </div>
-      <div style="display:flex;justify-content:space-between"><button class="bp" onclick="next(1)">Atrás</button><button class="bp" onclick="next(3)">Siguiente</button></div>
     </div>
-    <div id="s3">
-      <div class="card"><h2>Confirmar</h2><p>Revisa los datos.</p></div>
-      <div style="display:flex;justify-content:space-between"><button class="bp" onclick="next(2)">Atrás</button><button class="bp" onclick="alert('Enviado')">Enviar</button></div>
+    <div id="s3" class="card">
+      <h2>Resumen Final</h2>
+      <div id="summary"></div>
+      <div class="total" id="sum_total"></div>
+      <div class="row" style="margin-top: 30px;">
+        <button class="btn btn-sec" onclick="go(2)">Editar</button>
+        <button class="btn" onclick="enviar()">Generar PDF</button>
+      </div>
+      <div class="loading" id="load">Enviando a n8n...</div>
+    </div>
+    <div id="success" class="card success-msg">
+      <i>✓</i>
+      <h2>¡Presupuesto Enviado!</h2>
+      <p>Se está generando el PDF. Recibirás una notificación en breve.</p>
+      <button class="btn" onclick="location.reload()" style="margin-top: 30px;">Crear Nuevo</button>
     </div>
   </div>
   <script>
-    function next(s){
-      document.querySelectorAll('#s1,#s2,#s3').forEach(e=>e.classList.remove('active'));
-      document.querySelectorAll('.st').forEach(e=>e.classList.remove('active'));
-      document.getElementById('s'+s).classList.add('active');
-      document.getElementById('t'+s).classList.add('active');
+    let lines = 0;
+    const p_fec = document.getElementById('p_fec');
+    const p_num = document.getElementById('p_num');
+    const today = new Date();
+    p_fec.valueAsDate = today;
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const yyyy = today.getFullYear();
+    const rand = Math.floor(1000 + Math.random() * 9000);
+    p_num.value = `PR-${yyyy}${mm}-${rand}`;
+    function addLine() {
+      lines++;
+      const div = document.createElement('div');
+      div.className = 'line';
+      div.id = 'line_' + lines;
+      div.innerHTML = '<button class=\"btn-del\" onclick=\"delLine(' + lines + ')\">Eliminar</button><div class=\"fg\"><label>Concepto</label><input type=\"text\" class=\"l_desc\" placeholder=\"Descripción\"></div><div class=\"row\"><div class=\"fg\"><label>Cant.</label><input type=\"number\" class=\"l_cant\" value=\"1\" onchange=\"calcTotal()\"></div><div class=\"fg\"><label>Precio (€)</label><input type=\"number\" class=\"l_pre\" value=\"0\" step=\"0.01\" onchange=\"calcTotal()\"></div></div>';
+      document.getElementById('lines_cont').appendChild(div);
     }
-    function add(){
-      const d=document.createElement('div');d.className='lr';
-      d.innerHTML='<input type="text"><input type="number" value="1"><input type="number"><input type="number" value="0"><select><option value="21">21%</option></select><button class="bdel" onclick="this.parentElement.remove()">×</button>';
-      document.getElementById('l-cont').appendChild(d);
+    function delLine(id) { document.getElementById('line_'+id).remove(); calcTotal(); }
+    function go(s) {
+      ['s1','s2','s3'].forEach(id => document.getElementById(id).style.display = 'none');
+      document.getElementById('s'+s).style.display = 'block';
+      ['st1','st2_ind','st3_ind'].forEach((id, i) => {
+        document.getElementById(id).classList.toggle('active', i+1 === s);
+      });
+      if(s === 3) showSummary();
     }
+    function calcTotal() {
+      let t = 0;
+      document.querySelectorAll('.line').forEach(l => {
+        const c = l.querySelector('.l_cant').value || 0;
+        const p = l.querySelector('.l_pre').value || 0;
+        t += c * p;
+      });
+      return t;
+    }
+    function showSummary() {
+      const nom = document.getElementById('c_nom').value;
+      const nif = document.getElementById('c_nif').value;
+      const num = document.getElementById('p_num').value;
+      const fec = document.getElementById('p_fec').value;
+      let html = '<div class=\"sum-row\"><span>Cliente:</span><strong>' + nom + '</strong></div>';
+      html += '<div class=\"sum-row\"><span>NIF:</span><strong>' + nif + '</strong></div>';
+      html += '<div class=\"sum-row\"><span>Nº:</span><strong>' + num + '</strong></div>';
+      html += '<div class=\"sum-row\"><span>Fecha:</span><strong>' + fec + '</strong></div><br><h3>Líneas:</h3>';
+      document.querySelectorAll('.line').forEach(l => {
+        const d = l.querySelector('.l_desc').value;
+        const c = l.querySelector('.l_cant').value;
+        const p = l.querySelector('.l_pre').value;
+        html += '<div class=\"sum-row\"><span>' + d + ' (x' + c + ')</span><strong>' + (c*p).toFixed(2) + '€</strong></div>';
+      });
+      document.getElementById('summary').innerHTML = html;
+      document.getElementById('sum_total').innerText = 'TOTAL: ' + calcTotal().toFixed(2) + '€';
+    }
+    async function enviar() {
+      const load = document.getElementById('load');
+      load.style.display = 'block';
+      const data = {
+        emisor: "Pedro Juan Muñoz Esteve",
+        nif_emisor: "33468269A",
+        cliente: document.getElementById('c_nom').value,
+        nif_cliente: document.getElementById('c_nif').value,
+        numero: document.getElementById('p_num').value,
+        fecha: document.getElementById('p_fec').value,
+        total: calcTotal(),
+        lineas: Array.from(document.querySelectorAll('.line')).map(l => ({
+          descripcion: l.querySelector('.l_desc').value,
+          cantidad: l.querySelector('.l_cant').value,
+          precio: l.querySelector('.l_pre').value
+        }))
+      };
+      try {
+        await fetch('https://n8n.botcrafmaker.com/webhook/presupuestos', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        });
+        document.getElementById('s3').style.display = 'none';
+        document.getElementById('success').style.display = 'block';
+      } catch (e) {
+        alert('Error al enviar. Revisa el webhook en el código.');
+        load.style.display = 'none';
+      }
+    }
+    addLine();
   </script>
 </body>
 </html>
